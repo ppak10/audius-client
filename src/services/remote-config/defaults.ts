@@ -18,7 +18,8 @@ export const remoteConfigStringDefaults: {
   [StringKeys.APP_WIDE_NOTICE_TEXT]: null,
   [StringKeys.ETH_PROVIDER_URLS]: ETH_PROVIDER_URLS,
   [StringKeys.PRIMARY_CN_OVERRIDE]: null,
-  [StringKeys.PRIMARY_CN_OVERRIDE_TRIGGER]: null
+  [StringKeys.PRIMARY_CN_OVERRIDE_TRIGGER]: null,
+  [StringKeys.CONTENT_BLOCK_LIST]: null
 }
 export const remoteConfigDoubleDefaults: {
   [key in DoubleKeys]: number | null

@@ -62,7 +62,12 @@ export enum StringKeys {
   /**
    * Primary CN Override trigger
    */
-  PRIMARY_CN_OVERRIDE_TRIGGER = 'PRIMARY_CN_OVERRIDE_TRIGGER'
+  PRIMARY_CN_OVERRIDE_TRIGGER = 'PRIMARY_CN_OVERRIDE_TRIGGER',
+
+  /**
+   * Blocks content
+   */
+  CONTENT_BLOCK_LIST = 'CONTENT_BLOCK_LIST'
 }
 
 export type AllRemoteConfigKeys =

@@ -3,6 +3,29 @@ import { omit } from 'lodash'
 import AudiusBackend from 'services/AudiusBackend'
 import Track, { TrackMetadata } from 'models/Track'
 import { CoverArtSizes } from 'models/common/ImageSizes'
+import { getRemoteVar, StringKeys } from 'services/remote-config'
+import Client from 'models/Client'
+import { getClient } from 'utils/clientUtil'
+
+const DESKTOP_APP = getClient() === Client.ELECTRON
+const MOBILE_APP = process.env.REACT_APP_NATIVE_MOBILE
+const IS_WEB = !(DESKTOP_APP || MOBILE_APP)
+
+const maybeBlock = <T extends TrackMetadata>(
+  track: T
+): T & { _blocked?: boolean } => {
+  const blockList = new Set(
+    (getRemoteVar(StringKeys.CONTENT_BLOCK_LIST) || '').split(',').map(parseInt)
+  )
+  if (IS_WEB && blockList.has(track.track_id)) {
+    return {
+      ...track,
+      is_delete: true,
+      _blocked: true
+    }
+  }
+  return track
+}
 
 /**
  * Adds _cover_art_sizes to a track object if it does not have one set
@@ -58,7 +81,8 @@ export const reformat = <T extends TrackMetadata>(track: T): Track => {
   const withoutUser = omit(t, 'user')
   const withImages = addTrackImages(withoutUser)
   const withCosign = setIsCoSigned(withImages)
+  const withBlock = maybeBlock(withCosign)
 
-  const withDefaultSaves = setDefaultFolloweeSaves(withCosign)
+  const withDefaultSaves = setDefaultFolloweeSaves(withBlock)
   return withDefaultSaves
 }
