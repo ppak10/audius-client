@@ -23,4 +23,6 @@ export const remoteConfigDoubleDefaults: {
 } = {}
 export const remoteConfigBooleanDefaults: {
   [key in BooleanKeys]: boolean | null
-} = {}
+} = {
+  [BooleanKeys.DISPLAY_INSTAGRAM_VERIFICATION]: true
+}

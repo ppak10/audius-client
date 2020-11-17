@@ -27,7 +27,12 @@ export enum IntKeys {
   NOTIFICATION_POLLING_FREQ_MS = 'NOTIFICATION_POLLING_FREQ_MS'
 }
 
-export enum BooleanKeys {}
+export enum BooleanKeys {
+  /**
+   * Boolean to show instagram verification.
+   */
+  DISPLAY_INSTAGRAM_VERIFICATION = 'DISPLAY_INSTAGRAM_VERIFICATION'
+}
 
 export enum DoubleKeys {}
 
