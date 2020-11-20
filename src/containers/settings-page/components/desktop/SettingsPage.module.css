@@ -33,6 +33,11 @@
   fill: var(--neutral-light-4);
 }
 
+.resetButton {
+  height: 64px !important;
+  padding: 0px 35px !important;
+}
+
 .resetButton .resetButtonIcon path {
   fill: var(--secondary);
 }
@@ -57,10 +62,18 @@
 }
 
 .downloadButton {
-  padding-left: 17px;
-  padding-right: 17px;
+  height: 64px !important;
+  padding: 0px 35px !important;
 }
 
 .selectedServices > * {
   justify-content: center;
+}
+
+.resetButton .reviewIcon path {
+  fill: var(--secondary);
+}
+
+.settingButtonText {
+  font-size: var(--font-l) !important;
 }
