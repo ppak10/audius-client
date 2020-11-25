@@ -7,6 +7,8 @@ import { Button, ButtonType } from '@audius/stems'
 import tiledBackground from 'assets/img/notFoundTiledBackround.png'
 import { AppState } from 'store/types'
 
+import SnakeBoard from './SnakeBoard'
+
 import styles from './SomethingWrong.module.css'
 import { HOME_PAGE, ERROR_PAGE, SIGN_IN_PAGE, SIGN_UP_PAGE } from 'utils/route'
 import { getTheme } from 'store/application/ui/theme/selectors'
@@ -70,11 +72,11 @@ export const SomethingWrong = ({
         }}
       >
         <div className={styles.body}>
-          <div>{messages.body1}</div>
-          <div>
-            {messages.body2} <i className='emoji xl heavy-black-heart' />
+          <div className={styles.somethingWrongMessage}>
+            {messages.body1} {messages.body2} 💜
           </div>
         </div>
+        <SnakeBoard />
         <div className={styles.cta}>
           <Button
             className={styles.buttonFormatting}
@@ -89,13 +91,13 @@ export const SomethingWrong = ({
   )
 }
 
-function mapStateToProps(state: AppState) {
+function mapStateToProps (state: AppState) {
   return {
     theme: getTheme(state)
   }
 }
 
-function mapDispatchToProps(dispatch: Dispatch) {
+function mapDispatchToProps (dispatch: Dispatch) {
   return {
     goBack: (backRoute: string) => {
       window.location.href = backRoute

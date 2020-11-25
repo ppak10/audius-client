@@ -1,3 +1,8 @@
+.somethingWrongMessage {
+  font-size: medium;
+  margin: -45px;
+}
+
 .somethingWrong {
   display: flex;
   align-items: center;
@@ -16,10 +21,10 @@
   border-radius: 8px;
   background-color: var(--white);
   box-shadow: 0 16px 20px 0 var(--table-shadow);
-  
+
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
 
   user-select: none;
 }
@@ -31,7 +36,7 @@
 }
 
 .cta {
-  margin-top: 48px;
+  margin-top: 20px;
 }
 
 /* Mobile Styles */
@@ -59,4 +64,37 @@
   font-size: var(--font-m);
   font-weight: var(--font-bold);
   text-align: center;
+}
+
+/* SNAKE BOARDDDDDDDD */
+.row {
+  margin-bottom: -3px;
+}
+
+.square {
+  height: 45px;
+  width: 45px;
+  background-color: rgb(251 245 251);
+  border-style: solid;
+  border: 1px solid rgba(0, 0, 0, 0.65);
+  display: inline-block;
+}
+
+.snake {
+  height: 45px;
+  width: 45px;
+  background-color: #b92ff4;
+  border-style: solid;
+  border: 1px solid rgba(0, 0, 0, 0.65);
+  display: inline-block;
+  opacity: '0';
+}
+
+.turkey {
+  width: 45px;
+  height: auto;
+  background-color: rgb(251 245 251);
+  border-style: solid;
+  border: 1px solid rgba(0, 0, 0, 0.65);
+  display: inline-block;
 }
