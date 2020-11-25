@@ -73,7 +73,8 @@ class Visualizer extends Component<VisualizerProps, VisualizerState> {
       }
       */
      console.log(audio)
-      Visualizer2.showVisualizer3(audio)
+      let appendedNode = Visualizer2.showVisualizer3(audio)
+      console.log(appendedNode)
       // Visualizer2.showVisualizer3()
       console.log('recordOpen')
       recordOpen()
@@ -83,11 +84,14 @@ class Visualizer extends Component<VisualizerProps, VisualizerState> {
         Visualizer1.hide()
       }
       */
+    //  let visWrapper = document.querySelector('.visualizer')
+    //  if (visWrapper) visWrapper.removeChild()
+
       recordClose()
       console.log('recordClose')
     }
     // Rebind audio
-    if ((audio as AudioStream).audioCtx && playing) Visualizer1.bind(audio)
+    // if ((audio as AudioStream).audioCtx && playing) Visualizer1.bind(audio)
   }
 
   componentDidMount() {

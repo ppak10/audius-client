@@ -3,7 +3,6 @@ import * as THREE from "three";
 import * as SimplexNoise from "simplex-noise"
 
 class Visualizer2 {
-
     init() {}
 
     showVisualizer2 () {
@@ -31,16 +30,19 @@ class Visualizer2 {
       console.log('Initialized')
     }
 
+    // Adapted from https://codepen.io/prakhar625/pen/zddKRj
     showVisualizer3 (audio) {
-        let noise = new SimplexNoise();
         const context = audio.audioCtx
+        if (!context) return
+        const noise = new SimplexNoise();
+        // var src = context.createMediaElementSource(audio);
         var analyser = context.createAnalyser();
-        analyser.connect(context.destination);
+        // src.connect(analyser)
+        audio.source.connect(analyser)
+        // analyser.connect(context.destination);
         analyser.fftSize = 512;
         const bufferLength = analyser.frequencyBinCount;
         var dataArray = new Uint8Array(bufferLength);
-        console.log(dataArray)
-        console.log('context!')
 
         var scene = new THREE.Scene();
         var group = new THREE.Group();
@@ -93,9 +95,10 @@ class Visualizer2 {
 
         let visWrapper = document.querySelector('.visualizer')
         if (visWrapper)
+            console.log(renderer.domElement)
             visWrapper.appendChild(renderer.domElement)
 
-        // window.addEventListener('resize', onWindowResize, false);
+        window.addEventListener('resize', onWindowResize, false);
         render();
 
         function render() {
@@ -117,7 +120,12 @@ class Visualizer2 {
 
           makeRoughGround(plane, modulate(upperAvgFr, 0, 1, 0.5, 4));
           makeRoughGround(plane2, modulate(lowerMaxFr, 0, 1, 0.5, 4));
-          makeRoughBall(ball, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
+        //   makeRoughBall(ball, modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8), modulate(upperAvgFr, 0, 1, 0, 4));
+          makeRoughBall(
+            ball,
+            modulate(Math.pow(lowerMaxFr, 0.8), 0, 1, 0, 8),
+            modulate(upperAvgFr, 0, 1, 0, 4)
+          );
 
           group.rotation.y += 0.005;
           renderer.render(scene, camera);
@@ -177,6 +185,7 @@ class Visualizer2 {
         function max(arr){
             return arr.reduce(function(a, b){ return Math.max(a, b); })
         }
+        return renderer.domElement
     }
 }
 
