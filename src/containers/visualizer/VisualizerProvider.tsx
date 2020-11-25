@@ -8,6 +8,7 @@ import cn from 'classnames'
 import { makeGetCurrent } from 'store/queue/selectors'
 import { getAudio, getPlaying } from 'store/player/selectors'
 import Visualizer1 from 'utils/visualizer/visualizer-1.js'
+import Visualizer2 from 'utils/visualizer/visualizer2.js'
 import Toast from 'components/toast/Toast'
 
 import TrackInfo from 'components/track/TrackInfo'
@@ -23,6 +24,7 @@ import Track from 'models/Track'
 import { SquareSizes } from 'models/common/ImageSizes'
 import DynamicImage from 'components/dynamic-image/DynamicImage'
 import AudioStream from 'audio/AudioStream'
+
 
 type VisualizerProps = {
   visualizerVisible: boolean
@@ -64,16 +66,25 @@ class Visualizer extends Component<VisualizerProps, VisualizerState> {
 
     // Set visibility for the visualizer
     if (this.props.visualizerVisible) {
+      /*
       if (!Visualizer1.isShowing()) {
         const darkMode = shouldShowDark(theme)
         Visualizer1.show(darkMode)
-        recordOpen()
       }
+      */
+     console.log(audio)
+      Visualizer2.showVisualizer3(audio)
+      // Visualizer2.showVisualizer3()
+      console.log('recordOpen')
+      recordOpen()
     } else {
+      /*
       if (Visualizer1.isShowing()) {
         Visualizer1.hide()
-        recordClose()
       }
+      */
+      recordClose()
+      console.log('recordClose')
     }
     // Rebind audio
     if ((audio as AudioStream).audioCtx && playing) Visualizer1.bind(audio)
@@ -159,10 +170,12 @@ const makeMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   recordOpen: () => {
+    console.log('visualizer opened')
     const trackEvent: TrackEvent = make(Name.VISUALIZER_OPEN, {})
     dispatch(trackEvent)
   },
   recordClose: () => {
+    console.log('visualizer closed')
     const trackEvent: TrackEvent = make(Name.VISUALIZER_CLOSE, {})
     dispatch(trackEvent)
   }
