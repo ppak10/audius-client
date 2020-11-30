@@ -24,6 +24,7 @@ import {
 import * as DiscoveryAPI from '@audius/libs/src/services/discoveryProvider/requests'
 import * as IdentityAPI from '@audius/libs/src/services/identity/requests'
 import { Timer } from 'utils/performance'
+import { waitForRemoteConfig } from './remote-config/Provider'
 
 export const IDENTITY_SERVICE = process.env.REACT_APP_IDENTITY_SERVICE
 export const USER_NODE = process.env.REACT_APP_USER_NODE
@@ -440,6 +441,7 @@ class AudiusBackend {
         ),
         creatorNodeConfig: AudiusLibs.configCreatorNode(USER_NODE, true),
         comstockConfig: AudiusLibs.configComstock(COMSTOCK_URL),
+        captchaConfig: { siteKey: '6LfVR-0ZAAAAADFcqNM1P1IafKwQwN0E_l-gxQ9q' },
         isServer: false
       })
       await audiusLibs.init()
