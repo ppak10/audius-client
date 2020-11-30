@@ -71,30 +71,28 @@
   margin-bottom: -3px;
 }
 
-.square {
-  height: 45px;
-  width: 45px;
-  background-color: rgb(251 245 251);
-  border-style: solid;
-  border: 1px solid rgba(0, 0, 0, 0.65);
-  display: inline-block;
+.turkey {
+  font-size: 1.75rem;
+  width: 10%;
+  height: 10%;
+  border: 1px solid white;
+  position: absolute;
+  z-index: 1;
+}
+
+.grid {
+  position: relative;
+  margin: 50px auto;
+  width: 600px !important;
+  height: 600px !important;
+  border: 2px solid #000;
 }
 
 .snake {
-  height: 45px;
-  width: 45px;
+  height: 10%;
+  width: 10%;
   background-color: #b92ff4;
-  border-style: solid;
-  border: 1px solid rgba(0, 0, 0, 0.65);
-  display: inline-block;
-  opacity: '0';
-}
-
-.turkey {
-  width: 45px;
-  height: auto;
-  background-color: rgb(251 245 251);
-  border-style: solid;
-  border: 1px solid rgba(0, 0, 0, 0.65);
-  display: inline-block;
+  border: 1px solid white;
+  position: absolute;
+  z-index: 2;
 }
