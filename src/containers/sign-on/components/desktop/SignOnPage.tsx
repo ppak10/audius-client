@@ -168,6 +168,7 @@ const SignOnProvider = ({
     profileImage,
     status,
     accountReady,
+    mediaCount,
     followArtists: { selectedCategory, selectedUserIds }
   } = fields
   useEffect(() => {
@@ -250,6 +251,7 @@ const SignOnProvider = ({
         <ProfilePage
           name={name}
           handle={handle}
+          mediaCount={mediaCount}
           isVerified={verified}
           twitterId={twitterId}
           onHandleChange={onHandleChange}

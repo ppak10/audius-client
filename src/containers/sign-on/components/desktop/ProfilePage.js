@@ -142,6 +142,7 @@ export class ProfilePage extends Component {
     const {
       name,
       handle,
+      mediaCount,
       profileImage,
       isVerified,
       setProfileImage,
@@ -195,6 +196,7 @@ export class ProfilePage extends Component {
             showTwitterOverlay={showTwitterOverlay}
             profileImage={profileImage}
             name={name}
+            mediaCount={mediaCount}
             onTwitterLogin={this.onTwitterLogin}
             onInstagramLogin={this.onInstagramLogin}
             onToggleTwitterOverlay={this.onToggleTwitterOverlay}

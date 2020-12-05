@@ -179,7 +179,7 @@ class SettingsPage extends Component<SettingsPageProps, SettingsPageState> {
         header={header}
       >
         <div className={styles.settings}>
-          <SettingsCard
+          {/* <SettingsCard
             title={messages.verifiedTitle}
             description={messages.getVerified}
           >
@@ -193,7 +193,7 @@ class SettingsPage extends Component<SettingsPageProps, SettingsPageState> {
               onInstagramLogin={onInstagramLogin}
               onTwitterLogin={onTwitterLogin}
             />
-          </SettingsCard>
+          </SettingsCard> */}
           {!isMobile() && !isElectron() && (
             <SettingsCard
               title='Get Our Desktop App'

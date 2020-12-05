@@ -133,6 +133,19 @@
   top: 34px;
 }
 
+.mediaCount {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  background: var(--secondary-dark-2);
+  font-size: 12px;
+  color: var(--static-white);
+  padding: 5px 4px;
+  border-radius: 50%;
+  z-index: 100;
+  font-weight: var(--font-bold);
+}
+
 .continueButton .continueButtonText {
   font-weight: var(--font-bold);
   font-size: var(--font-l)

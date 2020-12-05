@@ -52,6 +52,7 @@ const initialState = {
   name: createTextField(),
   password: createTextField(),
   handle: createTextField(),
+  mediaCount: 0,
   accountAlreadyExisted: false,
   verified: false,
   useMetaMask: false,
@@ -224,6 +225,7 @@ const actionsMap = {
       },
       instagramScreenName: action.profile.username,
       profileImage: action.profileImage || null,
+      mediaCount: action.profile.media_count,
       verified: action.profile.is_verified
     }
   },

@@ -58,6 +58,9 @@ const ProfileForm = props => {
         <div className={styles.header}>{props.header}</div>
       ) : null}
       <div className={styles.profilePic}>
+        {props.mediaCount > 0 && (
+          <div className={styles.mediaCount}>{props.mediaCount}</div>
+        )}
         <ProfilePicture
           showEdit={!profileImage}
           isMobile={props.isMobile}

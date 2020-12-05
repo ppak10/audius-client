@@ -78,12 +78,14 @@ const InstagramAuth = ({
           body: JSON.stringify({ code })
         })
         const profileRespJson = await profileResp.json()
+        console.info('Fetch profile', profileRespJson)
         if (!profileRespJson.username) {
           return onFailure(new Error('Unable to fetch information'))
         }
         const fetchIGUserUrl = getIGUserUrl(profileRespJson.username)
         const igProfile = await window.fetch(fetchIGUserUrl)
         const igProfileJson = await igProfile.json()
+        console.log('Ig profile', igProfileJson)
         if (!igProfileJson.graphql || !igProfileJson.graphql.user) {
           return onFailure(new Error('Unable to fetch information'))
         }
@@ -101,6 +103,7 @@ const InstagramAuth = ({
         if (!setProfileResponse.ok) {
           return onFailure(new Error('Unable to fetch information'))
         }
+        igUserProfile.media_count = profileRespJson.media_count
 
         return onSuccess(igUserProfile.id, igUserProfile)
       } catch (err) {
