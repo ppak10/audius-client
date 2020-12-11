@@ -71,7 +71,7 @@ type GetTrendingArgs = {
   offset?: number
   limit?: number
   currentUserId: Nullable<ID>
-  genre?: string
+  genre: Nullable<string>
 }
 
 type GetFollowingArgs = {
@@ -238,7 +238,7 @@ class AudiusAPIClient {
       limit,
       offset,
       user_id: encodedCurrentUserId || undefined,
-      genre
+      genre: genre || undefined
     }
 
     const trendingResponse: Nullable<APIResponse<
@@ -722,7 +722,11 @@ class AudiusAPIClient {
       (await this._getResponse(ENDPOINT_MAP.searchAutocomplete, params)) ??
       emptySearchResponse
     const adapted = adapter.adaptSearchAutocompleteResponse(searchResponse)
-    return processSearchResults({ searchText: query, ...adapted })
+    return processSearchResults({
+      searchText: query,
+      isAutocomplete: true,
+      ...adapted
+    })
   }
 
   init() {

@@ -23,6 +23,8 @@ export enum MessageType {
   ENABLE_PUSH_NOTIFICATIONS = 'enable-push-notifications',
   DISABLE_PUSH_NOTIFICATIONS = 'disable-push-notifications',
   RESET_NOTIFICATIONS_BADGE_COUNT = 'reset-notifications-badge-count',
+  ENABLE_PUSH_NOTIFICATIONS_REMINDER = 'action/enable-push-notifications-reminder',
+  PROMPT_PUSH_NOTIFICATION_REMINDER = 'prompt-push-notifications-reminder',
 
   // Haptics
   HAPTIC_FEEDBACK = 'haptic-feedback',
@@ -40,6 +42,7 @@ export enum MessageType {
   BACKEND_SETUP = 'backend-setup',
   REQUEST_NETWORK_CONNECTED = 'request-network-connected',
   IS_NETWORK_CONNECTED = 'is-network-connected',
+  SIGNED_IN = 'signed-in',
 
   // Keyboard
   KEYBOARD_VISIBLE = 'keyboard-visible',
@@ -64,7 +67,10 @@ export enum MessageType {
   // Analytics
   ANALYTICS_IDENTIFY = 'analytics-identify',
   ANALYTICS_TRACK = 'analytics-track',
-  ANALYTICS_SCREEN = 'analytics-screen'
+  ANALYTICS_SCREEN = 'analytics-screen',
+
+  // Logging
+  LOGGING = 'logging'
 }
 
 export interface Message {
