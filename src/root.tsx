@@ -40,13 +40,12 @@ const isPublicSiteSubRoute = (location = window.location) => {
 
 const clientIsElectron = isElectron()
 
-const foundUser = getCurrentUserExists()
-
 const Root = () => {
   const [dappReady, setDappReady] = useState(false)
   const [connectivityFailure, setConnectivityFailure] = useState(false)
   const [renderPublicSite, setRenderPublicSite] = useState(isPublicSiteRoute())
   const isMobileClient = useIsMobile()
+  const foundUser = getCurrentUserExists()
 
   useEffect(() => {
     // TODO: listen to history and change routes based on history...
