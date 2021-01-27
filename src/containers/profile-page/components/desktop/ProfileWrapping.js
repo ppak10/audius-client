@@ -72,7 +72,6 @@ const Followers = props => {
               name={follower.name}
               followers={follower.follower_count}
               onClickArtistName={() => props.onClickArtistName(follower.handle)}
-              verified={follower.is_verified}
             />
           ))}
       </div>

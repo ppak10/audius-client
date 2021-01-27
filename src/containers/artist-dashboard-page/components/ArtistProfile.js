@@ -1,11 +1,11 @@
 import React from 'react'
-import { ReactComponent as IconVerified } from 'assets/img/iconVerified.svg'
 import { Button, ButtonType, IconArrow } from '@audius/stems'
 
 import styles from './ArtistProfile.module.css'
 import DynamicImage from 'components/dynamic-image/DynamicImage'
 import { SquareSizes } from 'models/common/ImageSizes'
 import { useUserProfilePicture } from 'hooks/useImageSize'
+import UserBadges from 'containers/user-badges/UserBadges'
 
 const ArtistProfile = props => {
   const profilePicture = useUserProfilePicture(
@@ -13,6 +13,7 @@ const ArtistProfile = props => {
     props.profilePictureSizes,
     SquareSizes.SIZE_150_BY_150
   )
+  console.log({ userId: props.userId })
   return (
     <div className={styles.artistProfileContainer}>
       <div className={styles.artistLeftContainer}>
@@ -24,9 +25,11 @@ const ArtistProfile = props => {
         <div className={styles.artistNameContainer}>
           <div className={styles.artistName}>
             <span>{props.name}</span>
-            {props.isVerified ? (
-              <IconVerified className={styles.iconVerified} />
-            ) : null}
+            <UserBadges
+              userId={props.userId}
+              badgeSize={16}
+              className={styles.iconVerified}
+            />
           </div>
           <span className={styles.artistHandle}>{`@${props.handle}`}</span>
         </div>

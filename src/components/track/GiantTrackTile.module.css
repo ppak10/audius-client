@@ -217,9 +217,8 @@
 }
 
 .verified {
-  height: 16px;
-  width: 16px;
   margin-left: 8px;
+  display: inline-block;
 }
 
 .makePublicButton {

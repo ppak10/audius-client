@@ -257,8 +257,8 @@ const TrackHeader = ({
       hasFavorited={coSign.has_remix_author_saved}
       hasReposted={coSign.has_remix_author_reposted}
       coSignName={coSign.user.name}
-      isVerified={coSign.user.is_verified}
       className={styles.coverArt}
+      userId={coSign.user.user_id}
     >
       <DynamicImage image={image} wrapperClassName={styles.imageWrapper} />
     </CoSign>
@@ -308,9 +308,9 @@ const TrackHeader = ({
         <div className={styles.coSignInfo}>
           <HoverInfo
             coSignName={coSign.user.name}
-            isVerified={coSign.user.is_verified}
             hasFavorited={coSign.has_remix_author_saved}
             hasReposted={coSign.has_remix_author_reposted}
+            userId={coSign.user.user_id}
           />
         </div>
       )}

@@ -14,6 +14,7 @@ import { useSubPageHeader } from 'containers/nav/store/context'
 import styles from './RemixesPage.module.css'
 import { pluralize } from 'utils/formatUtil'
 import { fullTrackRemixesPage } from 'utils/route'
+import UserBadges from 'containers/user-badges/UserBadges'
 
 const messages = {
   remixes: 'Remix',
@@ -93,9 +94,11 @@ const RemixesPage = g(
               {messages.by}
               <div className={styles.link} onClick={goToArtistPage}>
                 {user.name}
-                {user.is_verified && (
-                  <IconVerified className={styles.iconVerified} />
-                )}
+                <UserBadges
+                  userId={user.user_id}
+                  badgeSize={10}
+                  className={styles.iconVerified}
+                />
               </div>
             </div>
           </div>

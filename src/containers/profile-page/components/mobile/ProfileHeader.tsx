@@ -35,6 +35,7 @@ import SubscribeButton from 'components/general/SubscribeButton'
 import { make, useRecord } from 'store/analytics/actions'
 import { Name } from 'services/analytics'
 import UploadButton from './UploadButton'
+import UserBadges from 'containers/user-badges/UserBadges'
 
 const messages = {
   tracks: 'Tracks',
@@ -316,11 +317,11 @@ const ProfileHeader = ({
             <div className={styles.left}>
               <div className={styles.artistName}>
                 <h1>{name}</h1>
-                {verified ? (
-                  <span className={styles.iconVerified}>
-                    <IconVerified />
-                  </span>
-                ) : null}
+                <UserBadges
+                  userId={userId}
+                  className={styles.iconVerified}
+                  badgeSize={12}
+                />
               </div>
               <h2 className={styles.artistHandle}>{handle}</h2>
             </div>
