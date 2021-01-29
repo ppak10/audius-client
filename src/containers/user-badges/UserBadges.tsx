@@ -1,5 +1,5 @@
 import { ID } from 'models/common/Identifiers'
-import React, { cloneElement, ReactElement, useCallback, useMemo } from 'react'
+import React, { cloneElement, ReactElement, useMemo } from 'react'
 import { useSelector } from 'utils/reducer'
 import { ReactComponent as IconVerified } from 'assets/img/iconVerified.svg'
 import IconBronzeBadge from 'assets/img/IconBronzeBadge.png'
@@ -29,10 +29,14 @@ const UserBadges: React.FC<UserBadgesProps> = ({
   // Getting reselect selectors w/props to play nicely with useSelector
   // is a bit of a song-and-dance:
   // https://react-redux.js.org/next/api/hooks#useselector-examples
-  const tierAndVerifiedSelector = useMemo(makeGetTierAndVerifiedForUser, [])
-  const { tier, isVerified } = useSelector(state =>
-    tierAndVerifiedSelector(state, { userId })
-  )
+  // const tierAndVerifiedSelector = useMemo(makeGetTierAndVerifiedForUser, [])
+
+  // const { tier, isVerified } = useSelector(state => {
+  //   return tierAndVerifiedSelector(state, { userId })
+  // })
+
+  const tier = 'gold'
+  const isVerified = true
 
   const audioBadge = audioTierMap[tier]
 

@@ -33,13 +33,13 @@ export const makeUser = (
   }
 
   // const balance = Math.floor(Math.random() * 1000).toString() as StringWei
-  const tiers = ['10']
+  // const tiers = ['10']
   // const tiers = ['0', '10', '1000', '10000', '100000']
-  const balance = audioToWei(
-    tiers[Math.floor(Math.random() * tiers.length)] as StringAudio
-  ).toString() as StringWei
+  // const balance = audioToWei(
+  //   tiers[Math.floor(Math.random() * tiers.length)] as StringAudio
+  // ).toString() as StringWei
   // TODO: add this back in
-  // const balance = user.balance as StringWei
+  const balance = user.balance as StringWei
   const album_count = 'album_count' in user ? user.album_count : 0
   const followee_count = 'followee_count' in user ? user.followee_count : 0
   const follower_count = 'follower_count' in user ? user.follower_count : 0
@@ -122,7 +122,6 @@ export const makeTrack = (
   const decodedTrackId = decodeHashId(track.id)
   const decodedOwnerId = decodeHashId(track.user_id)
   const user = makeUser(track.user)
-  console.log({ userBalance: user?.balance })
   if (!decodedTrackId || !decodedOwnerId || !user) {
     return undefined
   }

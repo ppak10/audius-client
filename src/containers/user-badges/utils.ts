@@ -7,6 +7,8 @@ import {
   BNAudio,
   BNWei,
   getAccountBalance,
+  StringAudio,
+  stringAudioToBN,
   StringWei,
   stringWeiToAudioBN,
   stringWeiToBN,
@@ -17,29 +19,28 @@ import { getAudio } from 'store/player/selectors'
 
 export type BadgeTier = 'none' | 'bronze' | 'silver' | 'gold' | 'platinum'
 
-const badgeTiers: { tier: BadgeTier; minAudio: number }[] = [
+const badgeTiers: { tier: BadgeTier; minAudio: BNAudio }[] = [
   {
-    tier: 'none',
-    minAudio: 0
-  },
-  {
-    tier: 'bronze',
-    minAudio: 10
-  },
-  {
-    tier: 'silver',
-    minAudio: 1000
+    tier: 'platinum',
+    minAudio: stringAudioToBN('100000' as StringAudio)
   },
   {
     tier: 'gold',
-    minAudio: 10000
+    minAudio: stringAudioToBN('10000' as StringAudio)
   },
   {
-    tier: 'platinum',
-    minAudio: 100000
+    tier: 'silver',
+    minAudio: stringAudioToBN('1000' as StringAudio)
+  },
+  {
+    tier: 'bronze',
+    minAudio: stringAudioToBN('10' as StringAudio)
+  },
+  {
+    tier: 'none',
+    minAudio: stringAudioToBN('0' as StringAudio)
   }
 ]
-
 // Selectors
 
 export const getVerifiedForUser = (
@@ -67,34 +68,20 @@ export const getWeiBalanceForUser = (
   return wei
 }
 
-const getTierAndVerifiedForUser = createSelector(
-  [getWeiBalanceForUser, getVerifiedForUser],
-  (wei, isVerified) => {
-    const audio = stringWeiToAudioBN(wei)
+export const makeGetTierAndVerifiedForUser = () =>
+  createSelector(
+    [getWeiBalanceForUser, getVerifiedForUser],
+    (wei, isVerified) => {
+      const audio = stringWeiToAudioBN(wei)
 
-    const tier =
-      badgeTiers.reverse().find(t => {
-        const minBN = new BN(t.minAudio) as BNAudio
-        return minBN.lte(audio)
-      })?.tier ?? 'none'
+      const tier =
+        badgeTiers.find(t => {
+          return t.minAudio.lte(audio)
+        })?.tier ?? 'none'
 
-    return { tier, isVerified }
-  }
-)
-
-export const makeGetTierAndVerifiedForUser = () => getTierAndVerifiedForUser
-
-// export const getTierAndVerifiedForUser = (userId: ID) => (
-//   state: AppState
-// ): { tier: BadgeTier; isVerified: boolean } => {
-//   const { audioWei, isVerified } = getAudioAndVerified(userId)(state)
-//   const audio = weiToAudio(audioWei)
-
-//   const tier =
-//     badgeTiers.reverse().find(t => {
-//       const minBN = new BN(t.minAudio) as BNAudio
-//       return minBN.lte(audio)
-//     })?.tier ?? 'none'
-
-//   return { tier, isVerified }
-// }
+      if (tier === 'none') {
+        console.log('OK')
+      }
+      return { tier, isVerified }
+    }
+  )

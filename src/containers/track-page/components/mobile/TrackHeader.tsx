@@ -29,6 +29,7 @@ import CoSign from 'components/co-sign/CoSign'
 import HoverInfo from 'components/co-sign/HoverInfo'
 import { Size } from 'components/co-sign/types'
 import DownloadButtons from 'containers/download-buttons/DownloadButtons'
+import UserBadges from 'containers/user-badges/UserBadges'
 
 const messages = {
   track: 'TRACK',
@@ -68,6 +69,7 @@ type TrackHeaderProps = {
   isFollowing: boolean
   title: string
   trackId: ID
+  userId: ID
   coverArtSizes: CoverArtSizes | null
   artistName: string
   artistVerified: boolean
@@ -102,6 +104,7 @@ type TrackHeaderProps = {
 const TrackHeader = ({
   title,
   trackId,
+  userId,
   coverArtSizes,
   artistName,
   artistVerified,
@@ -284,7 +287,11 @@ const TrackHeader = ({
       <h1 className={styles.title}>{title}</h1>
       <div className={styles.artist} onClick={onClickArtistName}>
         <h2>{artistName}</h2>
-        {artistVerified ? <IconVerified className={styles.verified} /> : null}
+        <UserBadges
+          className={styles.verified}
+          badgeSize={16}
+          userId={userId}
+        />
       </div>
       <div className={styles.buttonSection}>
         <PlayButton playing={isPlaying} onPlay={onPlay} />

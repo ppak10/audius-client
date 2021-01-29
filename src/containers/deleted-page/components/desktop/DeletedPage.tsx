@@ -16,6 +16,7 @@ import { CoverArtSizes, SquareSizes } from 'models/common/ImageSizes'
 import ArtistPopover from 'components/artist/ArtistPopover'
 import Playable from 'models/Playable'
 import { NestedNonNullable } from 'utils/typeUtils'
+import UserBadges from 'containers/user-badges/UserBadges'
 
 const messages = {
   trackDeleted: 'Track [Deleted]',
@@ -128,9 +129,11 @@ const DeletedPage = g(
               <ArtistPopover handle={user.handle}>
                 <h2 className={styles.artist} onClick={goToArtistPage}>
                   {user.name}
-                  {user.is_verified && (
-                    <IconVerified className={styles.verified} />
-                  )}
+                  <UserBadges
+                    userId={user?.user_id}
+                    badgeSize={16}
+                    className={styles.verified}
+                  />
                 </h2>
               </ArtistPopover>
             </div>

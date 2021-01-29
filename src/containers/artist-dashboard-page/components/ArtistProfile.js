@@ -13,7 +13,6 @@ const ArtistProfile = props => {
     props.profilePictureSizes,
     SquareSizes.SIZE_150_BY_150
   )
-  console.log({ userId: props.userId })
   return (
     <div className={styles.artistProfileContainer}>
       <div className={styles.artistLeftContainer}>

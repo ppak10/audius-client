@@ -442,7 +442,7 @@ class GiantTrackTile extends PureComponent {
                       {artistName}
                       <UserBadges
                         className={styles.verified}
-                        badgeSize={16}
+                        badgeSize={18}
                         userId={userId}
                       />
                     </h2>
