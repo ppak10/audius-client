@@ -49,6 +49,7 @@ const EditableName = props => {
             userId={props.userId}
             badgeSize={24}
             className={styles.iconVerified}
+            useSVGTiers
           />
         </>
       )}

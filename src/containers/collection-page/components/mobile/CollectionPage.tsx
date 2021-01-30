@@ -132,7 +132,6 @@ const CollectionPage = ({
     0
   )
 
-  const playlistOwnerIsVerified = user?.is_verified ?? false
   const playlistOwnerName = user?.name ?? ''
   const playlistOwnerHandle = user?.handle ?? ''
   const playlistOwnerId = user?.user_id ?? null

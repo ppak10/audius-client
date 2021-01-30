@@ -5,7 +5,6 @@ import React, { useCallback, useState, useEffect } from 'react'
 import styles from './TrackTile.module.css'
 
 import { ReactComponent as IconStar } from 'assets/img/iconStar.svg'
-import { ReactComponent as IconVerified } from 'assets/img/iconVerified.svg'
 import { ReactComponent as IconVolume } from 'assets/img/iconVolume.svg'
 import cn from 'classnames'
 import { formatCount } from 'utils/formatUtil'

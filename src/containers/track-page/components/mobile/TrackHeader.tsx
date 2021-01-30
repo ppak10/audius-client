@@ -5,8 +5,6 @@ import { Button, ButtonType, IconPause, IconPlay } from '@audius/stems'
 
 import { formatSeconds, formatDate } from 'utils/timeUtil'
 
-import { ReactComponent as IconVerified } from 'assets/img/iconVerified.svg'
-
 import placeholderArt from 'assets/img/imageBlank2x.png'
 import styles from './TrackHeader.module.css'
 import DynamicImage from 'components/dynamic-image/DynamicImage'

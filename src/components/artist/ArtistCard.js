@@ -10,7 +10,7 @@ import { WidthSizes, SquareSizes } from 'models/common/ImageSizes'
 import DynamicImage from 'components/dynamic-image/DynamicImage'
 import UserBadges from 'containers/user-badges/UserBadges'
 
-const gradient = `linear-gradient(180deg, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 100%)`
+const gradient = `linear-gradient(180deg, rgba(0, 0, 0, 0.001) 0%, rgba(0, 0, 0, 0.005) 67.71%, rgba(0, 0, 0, 0.15) 79.17%, rgba(0, 0, 0, 0.25) 100%)`
 
 const ArtistCover = props => {
   const coverPhoto = useUserCoverPhoto(
@@ -49,6 +49,7 @@ const ArtistCover = props => {
               userId={props.userId}
               badgeSize={14}
               className={styles.iconVerified}
+              useSVGTiers
             />
           </div>
           <div

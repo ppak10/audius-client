@@ -25,7 +25,6 @@ import { FOLLOWING_USERS_ROUTE, FOLLOWERS_USERS_ROUTE } from 'utils/route'
 import { formatCount, squashNewLines } from 'utils/formatUtil'
 
 import { ReactComponent as BadgeArtist } from 'assets/img/badgeArtist.svg'
-import { ReactComponent as IconVerified } from 'assets/img/iconVerified.svg'
 import imageCoverPhotoBlank from 'assets/img/imageCoverPhotoBlank.jpg'
 import styles from './ProfileHeader.module.css'
 import FollowButton from 'components/general/FollowButton'

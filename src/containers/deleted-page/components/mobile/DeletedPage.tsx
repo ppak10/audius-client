@@ -1,5 +1,5 @@
 import React from 'react'
-import { IconVerified, Button, ButtonType, IconUser } from '@audius/stems'
+import { Button, ButtonType, IconUser } from '@audius/stems'
 import Lineup, { LineupWithoutTile } from 'containers/lineup/Lineup'
 import { withNullGuard } from 'utils/withNullGuard'
 import User from 'models/User'

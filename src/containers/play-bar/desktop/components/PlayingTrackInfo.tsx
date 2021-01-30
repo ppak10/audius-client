@@ -8,8 +8,6 @@ import { ID } from 'models/common/Identifiers'
 import { ProfilePictureSizes, SquareSizes } from 'models/common/ImageSizes'
 import { fullTrackPage } from 'utils/route'
 
-import { ReactComponent as IconVerified } from 'assets/img/iconVerified.svg'
-
 import { useUserProfilePicture } from 'hooks/useImageSize'
 import styles from './PlayingTrackInfo.module.css'
 import UserBadges from 'containers/user-badges/UserBadges'

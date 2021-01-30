@@ -16,8 +16,7 @@ import {
   ButtonSize,
   ButtonType,
   IconNote,
-  IconValidationX,
-  IconVerified
+  IconValidationX
 } from '@audius/stems'
 import DynamicImage from 'components/dynamic-image/DynamicImage'
 import LoadingSpinner from 'components/loading-spinner/LoadingSpinner'

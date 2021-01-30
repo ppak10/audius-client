@@ -1,6 +1,5 @@
 import React, { useEffect, useContext } from 'react'
 import { ReactComponent as IconRemixes } from 'assets/img/iconRemix.svg'
-import { ReactComponent as IconVerified } from 'assets/img/iconVerified.svg'
 
 import MobilePageContainer from 'components/general/MobilePageContainer'
 import Header from 'components/general/header/mobile/Header'

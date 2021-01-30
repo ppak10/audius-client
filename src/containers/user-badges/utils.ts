@@ -1,21 +1,15 @@
-import BN from 'bn.js'
 import { ID } from 'models/common/Identifiers'
 import { getAccountUser } from 'store/account/selectors'
 import { getUser } from 'store/cache/users/selectors'
 import { AppState } from 'store/types'
 import {
   BNAudio,
-  BNWei,
-  getAccountBalance,
   StringAudio,
   stringAudioToBN,
   StringWei,
-  stringWeiToAudioBN,
-  stringWeiToBN,
-  weiToAudio
+  stringWeiToAudioBN
 } from 'store/wallet/slice'
 import { createSelector } from 'reselect'
-import { getAudio } from 'store/player/selectors'
 
 export type BadgeTier = 'none' | 'bronze' | 'silver' | 'gold' | 'platinum'
 
@@ -41,6 +35,7 @@ const badgeTiers: { tier: BadgeTier; minAudio: BNAudio }[] = [
     minAudio: stringAudioToBN('0' as StringAudio)
   }
 ]
+
 // Selectors
 
 export const getVerifiedForUser = (
@@ -79,9 +74,6 @@ export const makeGetTierAndVerifiedForUser = () =>
           return t.minAudio.lte(audio)
         })?.tier ?? 'none'
 
-      if (tier === 'none') {
-        console.log('OK')
-      }
       return { tier, isVerified }
     }
   )

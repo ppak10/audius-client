@@ -4,7 +4,6 @@ import { UID, ID } from 'models/common/Identifiers'
 
 import styles from './PlaylistTile.module.css'
 
-import { ReactComponent as IconVerified } from 'assets/img/iconVerified.svg'
 import { ReactComponent as IconVolume } from 'assets/img/iconVolume.svg'
 import cn from 'classnames'
 import { formatCount } from 'utils/formatUtil'

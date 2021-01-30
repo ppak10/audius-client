@@ -15,7 +15,6 @@ import { useUserProfilePicture } from 'hooks/useImageSize'
 import { SquareSizes } from 'models/common/ImageSizes'
 
 import styles from './FirstUploadModal.module.css'
-import { ReactComponent as IconVerified } from 'assets/img/iconVerified.svg'
 import { openTwitterLink } from 'utils/tweet'
 import { fullProfilePage } from 'utils/route'
 import { useRecord, make } from 'store/analytics/actions'
