@@ -1,6 +1,7 @@
 import Color from 'models/common/Color'
 import { CID, ID } from 'models/common/Identifiers'
 import { CoverPhotoSizes, ProfilePictureSizes } from 'models/common/ImageSizes'
+import { StringWei } from 'store/wallet/slice'
 import { Nullable } from 'utils/typeUtils'
 import Timestamped from './common/Timestamped'
 
@@ -33,6 +34,9 @@ export type UserMetadata = {
   instagram_handle?: string
   website?: string
   donation?: string
+  twitterVerified?: boolean
+  instagramVerified?: boolean
+  balance?: Nullable<StringWei>
 } & Timestamped
 
 export type ComputedUserProperties = {

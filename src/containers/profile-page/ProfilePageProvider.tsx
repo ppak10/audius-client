@@ -4,7 +4,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { push as pushRoute, replace } from 'connected-react-router'
 import moment from 'moment'
 import { UnregisterCallback } from 'history'
-import { AppState, Status } from 'store/types'
+import { AppState, Kind, Status } from 'store/types'
 import { Dispatch } from 'redux'
 import { Tabs, FollowType, TracksSortMode } from './store/types'
 import { ID, UID } from 'models/common/Identifiers'
@@ -45,6 +45,9 @@ import {
 import { make, TrackEvent } from 'store/analytics/actions'
 import { Name, FollowSource, ShareSource } from 'services/analytics'
 import { parseUserRoute } from 'utils/route/userRouteParser'
+import { verifiedHandleWhitelist } from 'utils/handleWhitelist'
+import { makeKindId } from 'utils/uid'
+import { getIsDone } from 'store/confirmer/selectors'
 
 const INITIAL_UPDATE_FIELDS = {
   updatedName: null,
@@ -619,7 +622,7 @@ class ProfilePage extends PureComponent<ProfilePageProps, ProfilePageState> {
 
   getIsArtist = () => {
     const { profile } = this.props.profile
-    return !!profile && profile.is_creator && profile.track_count > 0
+    return !!profile && profile.track_count > 0
   }
 
   getIsOwner = () => {
@@ -680,6 +683,8 @@ class ProfilePage extends PureComponent<ProfilePageProps, ProfilePageState> {
     const userId = profile ? profile.user_id : null
     const handle = profile ? `@${profile.handle}` : ''
     const verified = profile ? profile.is_verified : false
+    const twitterVerified = profile ? profile.twitterVerified : false
+    const instagramVerified = profile ? profile.instagramVerified : false
     const created = profile
       ? moment(profile.created_at).format('YYYY')
       : moment().format('YYYY')
@@ -702,11 +707,15 @@ class ProfilePage extends PureComponent<ProfilePageProps, ProfilePageState> {
     const twitterHandle = profile
       ? updatedTwitterHandle !== null
         ? updatedTwitterHandle
+        : profile.twitterVerified && !verifiedHandleWhitelist.has(handle)
+        ? profile.handle
         : profile.twitter_handle || ''
       : ''
     const instagramHandle = profile
       ? updatedInstagramHandle !== null
         ? updatedInstagramHandle
+        : profile.instagramVerified
+        ? profile.handle
         : profile.instagram_handle || ''
       : ''
     const website = profile
@@ -774,6 +783,8 @@ class ProfilePage extends PureComponent<ProfilePageProps, ProfilePageState> {
       stats,
       activeTab,
       mostUsedTags,
+      twitterVerified,
+      instagramVerified,
 
       profile,
       status: profileLoadingStatus,
@@ -819,6 +830,7 @@ class ProfilePage extends PureComponent<ProfilePageProps, ProfilePageState> {
     const mobileProps = {
       trackIsActive: !!currentQueueItem,
       onConfirmUnfollow: this.props.onConfirmUnfollow,
+      isUserConfirming: this.props.isUserConfirming,
       hasMadeEdit:
         updatedName !== null ||
         updatedBio !== null ||
@@ -880,7 +892,10 @@ function makeMapStateToProps() {
     currentQueueItem: getCurrentQueueItem(state),
     playing: getPlaying(state),
     buffering: getBuffering(state),
-    pathname: getLocationPathname(state)
+    pathname: getLocationPathname(state),
+    isUserConfirming: !getIsDone(state, {
+      uid: makeKindId(Kind.USERS, getAccountUser(state)?.user_id)
+    })
   })
   return mapStateToProps
 }

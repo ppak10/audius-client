@@ -52,7 +52,6 @@ function* fetchProfileAsync(action) {
   try {
     let user
     if (action.handle) {
-      yield fork(fetchUserSocials, action.handle)
       user = yield call(
         fetchUserByHandle,
         action.handle,
@@ -79,7 +78,12 @@ function* fetchProfileAsync(action) {
       return
     }
     yield put(profileActions.fetchProfileSucceeded(user.handle, user.user_id))
+
+    // Fetch user socials and collections after fetching the user itself
+    yield fork(fetchUserSocials, action.handle)
     yield fork(fetchUserCollections, user.user_id)
+
+    // Get current user notification & subscription status
     const isSubscribed = yield call(
       AudiusBackend.getUserSubscribed,
       user.user_id
@@ -293,7 +297,7 @@ function* confirmUpdateProfile(userId, metadata) {
     confirmerActions.requestConfirmation(
       makeKindId(Kind.USERS, userId),
       function* () {
-        if (metadata.is_creator) {
+        if (metadata.creator_node_endpoint) {
           yield call(AudiusBackend.updateCreator, metadata, userId)
         } else {
           yield call(AudiusBackend.updateUser, metadata, userId)
@@ -320,14 +324,23 @@ function* confirmUpdateProfile(userId, metadata) {
         // Store the update in local storage so it is correct upon reload
         yield setAudiusAccountUser(confirmedUser)
         // Update the cached user so it no longer contains image upload artifacts
+        // and contains updated profile picture / cover photo sizes if any
+        const newMetadata = {
+          updatedProfilePicture: null,
+          updatedCoverPhoto: null
+        }
+        if (metadata.updatedCoverPhoto) {
+          newMetadata.cover_photo_sizes = confirmedUser.cover_photo_sizes
+        }
+        if (metadata.updatedProfilePicture) {
+          newMetadata.profile_picture_sizes =
+            confirmedUser.profile_picture_sizes
+        }
         yield put(
           cacheActions.update(Kind.USERS, [
             {
               id: confirmedUser.user_id,
-              metadata: {
-                updatedProfilePicture: null,
-                updatedCoverPhoto: null
-              }
+              metadata: newMetadata
             }
           ])
         )

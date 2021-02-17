@@ -44,7 +44,8 @@ const theme = {
 
   '--accent-purple': '#8E51CF',
 
-  '--page-header-gradient': 'linear-gradient(-22deg, #5B23E1 0%, #A22FEB 100%)',
+  '--page-header-gradient-color-1': '#5B23E1',
+  '--page-header-gradient-color-2': '#A22FEB',
 
   '--tile-shadow-1': 'rgba(133,129,153,0.1)',
   '--tile-shadow-2': '#E3E3E3',
@@ -98,7 +99,11 @@ const theme = {
 
   '--page-header-gradient-1': 'rgb(252,252,252)',
   '--page-header-gradient-2': 'rgba(252,252,252,0.85)',
-  '--page-header-gradient-2-alt': 'rgba(252,252,252,0.95)'
+  '--page-header-gradient-2-alt': 'rgba(252,252,252,0.95)',
+
+  '--profile-page-badge': '#FFFFFF',
+  '--profile-page-badge-shadow':
+    '0px 2px 5px -2px rgba(133, 129, 153, 0.25), 0px 1px 0px -2px rgba(227, 227, 227, 1), 0px 0px 1px -2px rgba(133, 129, 153, 0.1)'
 }
 
 export default theme

@@ -7,6 +7,7 @@ import { ReactComponent as IconHeart } from 'assets/img/iconHeart.svg'
 import { ReactComponent as IconPause } from 'assets/img/pbIconPause.svg'
 import { ReactComponent as IconPlay } from 'assets/img/pbIconPlay.svg'
 import { ReactComponent as IconDrag } from 'assets/img/iconDrag.svg'
+import { ReactComponent as IconRemoveTrack } from 'assets/img/iconRemoveTrack.svg'
 import TablePlayButton from 'components/tracks-table/TablePlayButton'
 import { useTrackCoverArt } from 'hooks/useImageSize'
 import { ID } from 'models/common/Identifiers'
@@ -14,6 +15,7 @@ import { CoverArtSizes, SquareSizes } from 'models/common/ImageSizes'
 import Lottie from 'react-lottie'
 import styles from './TrackListItem.module.css'
 import IconButton from 'components/general/IconButton'
+import UserBadges from 'containers/user-badges/UserBadges'
 
 export enum TrackItemAction {
   Save = 'save',
@@ -93,21 +95,25 @@ const getMessages = ({ isDeleted = false }: { isDeleted?: boolean } = {}) => ({
 
 export type TrackListItemProps = {
   className?: string
+  index: number
   isLoading: boolean
   isSaved?: boolean
   isReposted?: boolean
   isActive?: boolean
   isPlaying?: boolean
+  isRemoveActive?: boolean
   isDeleted: boolean
   coverArtSizes?: CoverArtSizes
   artistName: string
   artistHandle: string
   trackTitle: string
   trackId: ID
+  userId: ID
   uid?: string
   isReorderable?: boolean
   isDragging?: boolean
   onSave?: (isSaved: boolean, trackId: ID) => void
+  onRemove?: (trackId: ID) => void
   togglePlay?: (uid: string, trackId: ID) => void
   onClickOverflow?: () => void
   trackItemAction?: TrackItemAction
@@ -116,16 +122,20 @@ export type TrackListItemProps = {
 const TrackListItem = ({
   className,
   isLoading,
+  index,
   isSaved = false,
   isActive = false,
   isPlaying = false,
+  isRemoveActive = false,
   artistName,
   trackTitle,
   trackId,
+  userId,
   uid,
   coverArtSizes,
   isDeleted,
   onSave,
+  onRemove,
   togglePlay,
   trackItemAction,
   onClickOverflow,
@@ -142,6 +152,11 @@ const TrackListItem = ({
     e.stopPropagation()
     if (isDeleted && !isSaved) return
     if (onSave) onSave(isSaved, trackId)
+  }
+
+  const onRemoveTrack = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (onRemove) onRemove(index)
   }
 
   return (
@@ -180,7 +195,14 @@ const TrackListItem = ({
           {trackTitle}
           {messages.deleted}
         </div>
-        <div className={styles.artistName}>{artistName}</div>
+        <div className={styles.artistName}>
+          {artistName}
+          <UserBadges
+            userId={userId}
+            badgeSize={12}
+            className={styles.badges}
+          />
+        </div>
       </div>
       {onSaveTrack && trackItemAction === TrackItemAction.Save && (
         <div className={styles.iconContainer} onClick={onSaveTrack}>
@@ -198,6 +220,17 @@ const TrackListItem = ({
               e.stopPropagation()
               onClickOverflow()
             }}
+          />
+        </div>
+      )}
+      {onRemove && (
+        <div className={styles.iconContainer}>
+          <IconButton
+            icon={<IconRemoveTrack />}
+            className={cn(styles.removeTrackContainer, {
+              [styles.isRemoveActive]: isRemoveActive
+            })}
+            onClick={onRemoveTrack}
           />
         </div>
       )}

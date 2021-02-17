@@ -11,10 +11,12 @@ import ConnectedUserListModal from 'containers/user-list-modal/ConnectedUserList
 import BrowserPushConfirmationModal from './browser-push-confirmation-modal/BrowserPushConfirmationModal'
 import FirstUploadModal from 'containers/first-upload-modal/FirstUploadModal'
 import UnloadDialog from 'containers/unload-dialog/UnloadDialog'
+import EditPlaylistModal from 'containers/edit-playlist/desktop/EditPlaylistModal'
 
 import { getClient } from 'utils/clientUtil'
 import Client from 'models/Client'
 import AppCTAModal from './app-cta-modal/AppCTAModal'
+import TierExplainerModal from './user-badges/TierExplainerModal'
 
 const NATIVE_MOBILE = process.env.REACT_APP_NATIVE_MOBILE
 
@@ -30,16 +32,27 @@ const Modals = () => {
       <FirstUploadModal />
       <UnloadDialog />
 
-      {!isMobileClient && <EmbedModal />}
-      {!isMobileClient && <ConnectedUserListModal />}
       {!NATIVE_MOBILE && client !== Client.ELECTRON && (
         <BrowserPushConfirmationModal />
       )}
-      {!isMobileClient && <AppCTAModal />}
 
-      {isMobileClient && <ConnectedMobileOverflowModal />}
-      {isMobileClient && <UnfollowConfirmationModal />}
-      {isMobileClient && <DeletePlaylistConfirmationModal />}
+      {!isMobileClient && (
+        <>
+          <EmbedModal />
+          <EditPlaylistModal />
+          <ConnectedUserListModal />
+          <AppCTAModal />
+          <TierExplainerModal />
+        </>
+      )}
+
+      {isMobileClient && (
+        <>
+          <ConnectedMobileOverflowModal />
+          <UnfollowConfirmationModal />
+          <DeletePlaylistConfirmationModal />
+        </>
+      )}
     </>
   )
 }

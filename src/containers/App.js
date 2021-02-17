@@ -47,6 +47,7 @@ import {
   REPOSTING_USERS_ROUTE,
   FAVORITING_USERS_ROUTE,
   ACCOUNT_SETTINGS_PAGE,
+  ACCOUNT_VERIFICATION_SETTINGS_PAGE,
   NOTIFICATION_SETTINGS_PAGE,
   ABOUT_SETTINGS_PAGE,
   FOLLOWING_USERS_ROUTE,
@@ -143,6 +144,8 @@ import ExploreCollectionsPage from './explore-page/ExploreCollectionsPage'
 import ConfirmerPreview from 'containers/confirmer-preview/ConfirmerPreview'
 import Notice from './notice/Notice'
 import SignOn from 'containers/sign-on/SignOn'
+import EnablePushNotificationsDrawer from './enable-push-notifications-drawer/EnablePushNotificationsDrawer'
+import { ThemeChangeMessage } from 'services/native-mobile-interface/theme'
 
 const MOBILE_BANNER_LOCAL_STORAGE_KEY = 'dismissMobileAppBanner'
 
@@ -162,6 +165,10 @@ const ConnectedMusicConfetti = lazyWithPreload(
 
 const NATIVE_MOBILE = process.env.REACT_APP_NATIVE_MOBILE
 export const MAIN_CONTENT_ID = 'mainContent'
+
+export const includeSearch = search => {
+  return search.includes('oauth_token') || search.includes('code')
+}
 
 initializeSentry()
 
@@ -218,15 +225,22 @@ class App extends Component {
       this.ipc = window.require('electron').ipcRenderer
       // We downloaded an update, the user can safely restart
       this.ipc.on('updateDownloaded', (event, arg) => {
+        console.info('updateDownload', event, arg)
         this.setState({ showUpdateAppBanner: true })
       })
 
       this.ipc.on('updateDownloadProgress', (event, arg) => {
-        console.info(event, arg)
+        console.info('updateDownloadProgress', event, arg)
       })
+
+      this.ipc.on('updateError', (event, arg) => {
+        console.error('updateError', event, arg)
+      })
+
       // There is an update available, the user should update if it's
       // more than a minor version.
       this.ipc.on('updateAvailable', (event, arg) => {
+        console.info('updateAvailable', event, arg)
         const { version, currentVersion } = arg
         if (semver.minor(currentVersion) < semver.minor(version)) {
           this.setState({ showRequiresUpdate: true })
@@ -274,9 +288,7 @@ class App extends Component {
       }
     }
 
-    if (this.props.theme === null) {
-      this.props.setTheme(getSystemTheme() || Theme.DEFAULT)
-    }
+    this.handleTheme()
   }
 
   componentDidUpdate(prevProps) {
@@ -293,7 +305,10 @@ class App extends Component {
     ) {
       if (prevProps.accountStatus === Status.LOADING) {
         this.pushWithToken(TRENDING_PAGE)
-        this.props.openSignOn(true, SignOnPages.SIGNIN)
+        // If native mobile, a saga watches for fetch account failure to push route
+        if (!NATIVE_MOBILE) {
+          this.props.openSignOn(true, SignOnPages.SIGNIN)
+        }
         this.props.updateRouteOnSignUpCompletion(this.state.entryRoute)
       } else {
         this.pushWithToken(TRENDING_PAGE)
@@ -328,6 +343,10 @@ class App extends Component {
     ) {
       this.props.setConnectivityFailure(this.props.firstLoadConnectivityFailure)
     }
+
+    if (prevProps.theme !== this.props.theme) {
+      this.handleTheme()
+    }
   }
 
   componentWillUnmount() {
@@ -341,9 +360,27 @@ class App extends Component {
     }
   }
 
+  handleTheme() {
+    // Set local theme
+    if (this.props.theme === null) {
+      this.props.setTheme(getSystemTheme() || Theme.DEFAULT)
+    }
+
+    // If we're on native mobile, dispatch
+    // a message to the native layer so it can properly
+    // set it's status bar color.
+    if (NATIVE_MOBILE) {
+      const theme = this.props.theme || Theme.DEFAULT
+      const themeMessage = new ThemeChangeMessage(theme)
+      themeMessage.send()
+    }
+  }
+
   pushWithToken = route => {
-    if (this.props.location.search.includes('oauth_token')) {
-      this.props.history.push(`${route}${this.props.location.search}`)
+    const search = this.props.location.search
+    // Twitter and instagram search params
+    if (includeSearch(search)) {
+      this.props.history.push(`${route}${search}`)
     } else {
       this.props.history.push(route)
     }
@@ -687,6 +724,12 @@ class App extends Component {
               />
               <MobileRoute
                 exact
+                path={ACCOUNT_VERIFICATION_SETTINGS_PAGE}
+                isMobile={isMobileClient}
+                render={() => <SettingsPage subPage={SubPage.VERIFICATION} />}
+              />
+              <MobileRoute
+                exact
                 path={NOTIFICATION_SETTINGS_PAGE}
                 isMobile={isMobileClient}
                 render={() => <SettingsPage subPage={SubPage.NOTIFICATIONS} />}
@@ -787,7 +830,7 @@ class App extends Component {
                     window.location.pathname === HOME_PAGE
                       ? FEED_PAGE
                       : window.location.pathname,
-                  search: this.props.location.search.includes('oauth_token')
+                  search: includeSearch(this.props.location.search)
                     ? this.props.location.search
                     : ''
                 }}
@@ -814,6 +857,8 @@ class App extends Component {
 
         {/* Mobile-only */}
         {isMobileClient && <ConnectedReachabilityBar />}
+        {/* Native Mobile-only */}
+        {isMobileClient && NATIVE_MOBILE && <EnablePushNotificationsDrawer />}
 
         {shouldShowPopover && isMobileClient && !NATIVE_MOBILE && (
           <AppRedirectPopover

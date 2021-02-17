@@ -1,8 +1,8 @@
 import React from 'react'
+import { Modal } from '@audius/stems'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import Modal from 'components/general/Modal'
 import FollowButton from 'components/general/FollowButton'
 import ArtistChip from 'components/artist/ArtistChip'
 import { push as pushRoute } from 'connected-react-router'
@@ -30,9 +30,13 @@ export const UserListModal = props => {
   return (
     <Modal
       title={props.title}
-      width={360}
-      visible={props.visible}
+      showTitleHeader
+      bodyClassName={styles.modalBody}
+      isOpen={props.visible}
       onClose={props.onClose}
+      titleClassName={styles.modalTitle}
+      headerContainerClassName={styles.modalHeader}
+      showDismissButton
     >
       <SimpleBar
         scrollableNodeProps={{ id: simpleBarId }}
@@ -55,7 +59,6 @@ export const UserListModal = props => {
                 profilePictureSizes={user._profile_picture_sizes}
                 userId={user.user_id}
                 followers={user.follower_count}
-                verified={user.is_verified}
                 onClickArtistName={() => {
                   props.onClose()
                   props.onClickArtistName(user.handle)
@@ -101,8 +104,7 @@ UserListModal.propTypes = {
       id: PropTypes.number,
       name: PropTypes.string,
       follower_count: PropTypes.number,
-      following: PropTypes.bool,
-      verified: PropTypes.bool
+      following: PropTypes.bool
     })
   ),
   initialLoad: PropTypes.bool,

@@ -1,6 +1,8 @@
 import TimeRange from 'models/TimeRange'
 import FeedFilter from 'models/FeedFilter'
 import { ID, PlayableType } from 'models/common/Identifiers'
+import { WalletAddress } from 'store/wallet/slice'
+import { MonitorPayload, ServiceMonitorType } from './serviceMonitoring'
 
 export const ANALYTICS_TRACK_EVENT = 'ANALYTICS/TRACK_EVENT'
 
@@ -107,7 +109,17 @@ export enum Name {
   REMIX_NEW_REMIX = 'Remix: New Remix',
   REMIX_COSIGN = 'Remix: CoSign',
   REMIX_COSIGN_INDICATOR = 'Remix: CoSign Indicator',
-  REMIX_HIDE = 'Remix: Hide'
+  REMIX_HIDE = 'Remix: Hide',
+  CLAIM_AUDIO_REQUEST = 'Claim $AUDIO: Request',
+  CLAIM_AUDIO_SUCCESS = 'Claim $AUDIO: Success',
+  CLAIM_AUDIO_FAILURE = 'Claim $AUDIO: Failure',
+  SEND_AUDIO_REQUEST = 'Send $AUDIO: Request',
+  SEND_AUDIO_SUCCESS = 'Send $AUDIO: Success',
+  SEND_AUDIO_FAILURE = 'Send $AUDIO: Failure',
+
+  // Service monitoring
+  SERVICE_MONITOR_REQUEST = 'Service Monitor: Request',
+  SERVICE_MONITOR_HEALTH_CHECK = 'Service Monitor: Status'
 }
 
 type PageView = {
@@ -355,7 +367,7 @@ type EmbedCopy = {
   eventName: Name.EMBED_COPY
   kind: PlayableType
   id: string
-  size: 'standard' | 'compact'
+  size: 'card' | 'compact' | 'tiny'
 }
 
 // Track Upload
@@ -664,6 +676,49 @@ type RemixHide = {
   handle: string
 }
 
+type ClaimAudioRequest = {
+  eventName: Name.CLAIM_AUDIO_REQUEST
+  wallet: WalletAddress
+}
+
+type ClaimAudioSuccess = {
+  eventName: Name.CLAIM_AUDIO_SUCCESS
+  wallet: WalletAddress
+}
+
+type ClaimAudioFailure = {
+  eventName: Name.CLAIM_AUDIO_FAILURE
+  wallet: WalletAddress
+}
+
+type SendAudioRequest = {
+  eventName: Name.SEND_AUDIO_REQUEST
+  from: WalletAddress
+  recipient: WalletAddress
+}
+
+type SendAudioSuccess = {
+  eventName: Name.SEND_AUDIO_SUCCESS
+  from: WalletAddress
+  recipient: WalletAddress
+}
+
+type SendAudioFailure = {
+  eventName: Name.SEND_AUDIO_FAILURE
+  from: WalletAddress
+  recipient: WalletAddress
+}
+
+type ServiceMonitorRequest = {
+  eventName: Name.SERVICE_MONITOR_REQUEST
+  type: ServiceMonitorType
+} & MonitorPayload
+
+type ServiceMonitorHealthCheck = {
+  eventName: Name.SERVICE_MONITOR_HEALTH_CHECK
+  type: ServiceMonitorType
+} & MonitorPayload
+
 export type BaseAnalyticsEvent = { type: typeof ANALYTICS_TRACK_EVENT }
 
 export type AllTrackingEvents =
@@ -760,3 +815,11 @@ export type AllTrackingEvents =
   | RemixCosign
   | RemixCosignIndicator
   | RemixHide
+  | ClaimAudioRequest
+  | ClaimAudioSuccess
+  | ClaimAudioFailure
+  | SendAudioRequest
+  | SendAudioSuccess
+  | SendAudioFailure
+  | ServiceMonitorRequest
+  | ServiceMonitorHealthCheck

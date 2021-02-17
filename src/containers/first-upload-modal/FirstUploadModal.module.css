@@ -1,12 +1,13 @@
 .modalBody {
   max-width: 768px;
+  width: 100%;
 }
 
 .title {
   color: var(--secondary);
   font-weight: var(--font-heavy);
   font-size: var(--font-4xl);
-  
+
   user-select: none;
   background-image: var(--page-header-gradient);
 
@@ -29,6 +30,9 @@
 .artist {
   margin-left: 24px;
   margin-right: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .image {
@@ -50,11 +54,11 @@
   line-height: 20px;
   text-align: center;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .iconVerified {
-  height: 12px;
-  width: 12px;
   margin-bottom: 1px;
   margin-left: 4px;
 }

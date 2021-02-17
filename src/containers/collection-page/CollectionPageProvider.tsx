@@ -22,13 +22,13 @@ import {
   trackPage,
   profilePage,
   NOT_FOUND_PAGE,
-  FEED_PAGE,
   REPOSTING_USERS_ROUTE,
   FAVORITING_USERS_ROUTE,
   fullPlaylistPage,
   playlistPage,
   albumPage
 } from 'utils/route'
+import { open as openEditCollectionModal } from 'store/application/ui/editPlaylistModal/slice'
 import { setRepost } from 'containers/reposts-page/store/actions'
 import { RepostType } from 'containers/reposts-page/store/types'
 import { setFavorite } from 'containers/favorites-page/store/actions'
@@ -79,6 +79,7 @@ import {
 import { SmartCollection } from 'models/Collection'
 import DeletedPage from 'containers/deleted-page/DeletedPage'
 import { parseCollectionRoute } from 'utils/route/collectionRouteParser'
+import { getLocationPathname } from 'store/routing/selectors'
 
 type OwnProps = {
   type: CollectionsPageType
@@ -99,8 +100,6 @@ type CollectionPageProps = OwnProps &
 type CollectionPageState = {
   filterText: string
   initialOrder: string[] | null
-  showEditPlaylist: boolean
-  showDeleteConfirmation: boolean
   playlistId: number | null
   reordering: string[] | null
   allowReordering: boolean
@@ -116,8 +115,6 @@ class CollectionPage extends Component<
   state: CollectionPageState = {
     filterText: '',
     initialOrder: null,
-    showEditPlaylist: false,
-    showDeleteConfirmation: false,
     playlistId: null,
     // For drag + drop reordering
     reordering: null,
@@ -148,7 +145,7 @@ class CollectionPage extends Component<
       collection: { userUid, metadata, status, user },
       smartCollection,
       tracks,
-      location: { pathname },
+      pathname,
       fetchCollectionSucceeded
     } = this.props
 
@@ -230,16 +227,14 @@ class CollectionPage extends Component<
             ? albumPage(user!.handle, metadata.playlist_name, collectionId)
             : playlistPage(user!.handle, metadata.playlist_name, collectionId)
           this.props.replaceRoute(newPath)
-        } else if (
-          // Check that the collection name hasn't changed. If so, update url.
-          prevMetadata &&
-          metadata.playlist_name !== prevMetadata.playlist_name &&
-          title &&
-          newCollectionName !== title &&
-          collectionId === metadata.playlist_id
-        ) {
-          const newPath = pathname.replace(title, newCollectionName)
-          this.props.replaceRoute(newPath)
+        } else {
+          // Check that the playlist name hasn't changed. If so, update url.
+          if (collectionId === metadata.playlist_id && title) {
+            if (newCollectionName !== title) {
+              const newPath = pathname.replace(title, newCollectionName)
+              this.props.replaceRoute(newPath)
+            }
+          }
         }
       }
     }
@@ -259,8 +254,13 @@ class CollectionPage extends Component<
 
   componentWillUnmount() {
     if (this.unlisten) this.unlisten()
-    if (this.props.smartCollection || !this.props.isMobile)
+    // On mobile, because the transitioning-out collection page unmounts
+    // after the transitioning-in collection page mounts, we do not want to reset
+    // the collection in unmount. That would end up clearing the content AFTER
+    // new content is loaded.
+    if (!this.props.isMobile) {
       this.resetCollection()
+    }
   }
 
   playListContentsEqual(
@@ -287,7 +287,6 @@ class CollectionPage extends Component<
     if (params) {
       const { handle, collectionId } = params
       if (forceFetch || collectionId !== this.state.playlistId) {
-        this.resetCollection()
         this.setState({ playlistId: collectionId as number })
         this.props.fetchCollection(handle, collectionId as number)
         this.props.fetchTracks()
@@ -531,19 +530,8 @@ class CollectionPage extends Component<
     this.props.orderPlaylist(this.state.playlistId!, trackIdAndTimes, newOrder)
   }
 
-  onSaveEdit = (formFields: any) => {
-    this.setState({ showEditPlaylist: false })
-    this.props.editPlaylist(this.state.playlistId!, formFields)
-  }
-
   onPublish = () => {
     this.props.publishPlaylist(this.state.playlistId!)
-  }
-
-  onDelete = () => {
-    this.setState({ showEditPlaylist: false })
-    this.props.deletePlaylist(this.state.playlistId!)
-    this.props.goToRoute(FEED_PAGE)
   }
 
   onSavePlaylist = (isSaved: boolean, playlistId: number) => {
@@ -574,10 +562,6 @@ class CollectionPage extends Component<
     this.props.shareCollection(playlistId)
   }
 
-  onDeletePlaylist = () => this.setState({ showDeleteConfirmation: true })
-  onCancelEditPlaylist = () => this.setState({ showEditPlaylist: false })
-  onCancelDelete = () => this.setState({ showDeleteConfirmation: false })
-
   onHeroTrackClickArtistName = () => {
     const {
       goToRoute,
@@ -587,7 +571,11 @@ class CollectionPage extends Component<
     goToRoute(profilePage(playlistOwnerHandle))
   }
 
-  onHeroTrackEdit = () => this.setState({ showEditPlaylist: true })
+  onHeroTrackEdit = () => {
+    if (this.state.playlistId)
+      this.props.onEditCollection(this.state.playlistId)
+  }
+
   onHeroTrackShare = () => {
     const { playlistId } = this.state
     this.onSharePlaylist(playlistId!)
@@ -687,12 +675,7 @@ class CollectionPage extends Component<
       smartCollection
     } = this.props
 
-    const {
-      showEditPlaylist,
-      showDeleteConfirmation,
-      playlistId,
-      allowReordering
-    } = this.state
+    const { playlistId, allowReordering } = this.state
 
     const title = metadata?.playlist_name ?? ''
     const description = metadata?.description ?? ''
@@ -706,8 +689,6 @@ class CollectionPage extends Component<
       title,
       description,
       canonicalUrl,
-      showEditPlaylist,
-      showDeleteConfirmation,
       playlistId: playlistId!,
       allowReordering,
       playing,
@@ -738,11 +719,6 @@ class CollectionPage extends Component<
       onSortTracks: this.onSortTracks,
       onReorderTracks: this.onReorderTracks,
       onClickRemove: this.onClickRemove,
-      onDeletePlaylist: this.onDeletePlaylist,
-      onSaveEdit: this.onSaveEdit,
-      onCancelEditPlaylist: this.onCancelEditPlaylist,
-      onDelete: this.onDelete,
-      onCancelDelete: this.onCancelDelete,
       onClickMobileOverflow: this.props.clickOverflow,
       onClickFavorites: this.onClickFavorites,
       onClickReposts: this.onClickReposts,
@@ -787,7 +763,8 @@ function makeMapStateToProps() {
       userPlaylists: getAccountCollections(state, {}),
       currentQueueItem: getCurrentQueueItem(state),
       playing: getPlaying(state),
-      buffering: getBuffering(state)
+      buffering: getBuffering(state),
+      pathname: getLocationPathname(state)
     }
   }
   return mapStateToProps
@@ -935,7 +912,9 @@ function mapDispatchToProps(dispatch: Dispatch) {
           id: trackID
         })
       ),
-    setModalVisibility: () => dispatch(setVisibility(true))
+    setModalVisibility: () => dispatch(setVisibility(true)),
+    onEditCollection: (playlistId: ID) =>
+      dispatch(openEditCollectionModal(playlistId))
   }
 }
 

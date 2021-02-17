@@ -38,6 +38,7 @@ import IconButton from 'components/general/IconButton'
 import { withNullGuard } from 'utils/withNullGuard'
 import { IconKebabHorizontal } from '@audius/stems'
 import { HeaderContext } from 'components/general/header/mobile/HeaderContextProvider'
+import TierExplainerDrawer from 'containers/user-badges/TierExplainerDrawer'
 
 export type ProfilePageProps = {
   // Computed
@@ -53,6 +54,8 @@ export type ProfilePageProps = {
   location: string
   twitterHandle: string
   instagramHandle: string
+  twitterVerified?: boolean
+  instagramVerified?: boolean
   website: string
   donation: string
   coverPhotoSizes: CoverPhotoSizes | null
@@ -74,6 +77,7 @@ export type ProfilePageProps = {
   onClickMobileOverflow: (userId: ID, overflowActions: OverflowAction[]) => void
   stats: Array<{ number: number; title: string; key: string }>
   trackIsActive: boolean
+  isUserConfirming: boolean
 
   profile: ProfileUser | null
   albums: Collection[] | null
@@ -178,12 +182,15 @@ const ProfilePage = g(
     followers,
     twitterHandle,
     instagramHandle,
+    twitterVerified,
+    instagramVerified,
     website,
     donation,
     albums,
     playlists,
     artistTracks,
     userFeed,
+    isUserConfirming,
     getLineupProps,
     loadMoreArtistTracks,
     loadMoreUserFeed,
@@ -302,6 +309,8 @@ const ProfilePage = g(
           isVerified={verified}
           twitterHandle={twitterHandle}
           instagramHandle={instagramHandle}
+          twitterVerified={twitterVerified}
+          instagramVerified={instagramVerified}
           website={website}
           donation={donation}
           onUpdateName={updateName}
@@ -318,6 +327,7 @@ const ProfilePage = g(
         <Card
           key={playlist.playlist_id}
           id={playlist.playlist_id}
+          userId={playlist.playlist_owner_id}
           imageSize={playlist._cover_art_sizes}
           primaryText={playlist.playlist_name}
           secondaryText={formatCardSecondaryText(
@@ -342,6 +352,7 @@ const ProfilePage = g(
           <Card
             key={album.playlist_id}
             id={album.playlist_id}
+            userId={album.playlist_owner_id}
             imageSize={album._cover_art_sizes}
             primaryText={album.playlist_name}
             secondaryText={formatCardSecondaryText(
@@ -535,65 +546,68 @@ const ProfilePage = g(
     })
 
     return (
-      <NetworkConnectivityMonitor
-        pageDidLoad={status !== Status.LOADING}
-        onDidRegainConnectivity={asyncRefresh}
-      >
-        <MobilePageContainer
-          title={name && handle ? `${name} (${handle})` : ''}
-          description={bio}
-          canonicalUrl={fullProfilePage(handle)}
-          containerClassName={styles.container}
+      <>
+        <NetworkConnectivityMonitor
+          pageDidLoad={status !== Status.LOADING}
+          onDidRegainConnectivity={asyncRefresh}
         >
-          <PullToRefresh
-            fetchContent={asyncRefresh}
-            shouldPad={false}
-            overImage
-            isDisabled={isEditing}
+          <MobilePageContainer
+            title={name && handle ? `${name} (${handle})` : ''}
+            description={bio}
+            canonicalUrl={fullProfilePage(handle)}
+            containerClassName={styles.container}
           >
-            <ProfileHeader
-              name={name}
-              handle={handle}
-              isArtist={isArtist}
-              bio={bio}
-              verified={verified}
-              userId={profile.user_id}
-              loading={status === Status.LOADING}
-              coverPhotoSizes={coverPhotoSizes}
-              profilePictureSizes={profilePictureSizes}
-              hasProfilePicture={hasProfilePicture}
-              playlistCount={profile.playlist_count}
-              trackCount={profile.track_count}
-              followerCount={profile.follower_count}
-              followingCount={profile.followee_count}
-              setFollowingUserId={setFollowingUserId}
-              setFollowersUserId={setFollowersUserId}
-              twitterHandle={twitterHandle}
-              instagramHandle={instagramHandle}
-              website={website}
-              donation={donation}
-              followers={followers}
-              following={following}
-              isSubscribed={isSubscribed}
-              onFollow={onFollow}
-              onUnfollow={onConfirmUnfollow}
-              goToRoute={goToRoute}
-              mode={mode}
-              switchToEditMode={onEdit}
-              updatedProfilePicture={
-                updatedProfilePicture ? updatedProfilePicture.url : null
-              }
-              updatedCoverPhoto={
-                updatedCoverPhoto ? updatedCoverPhoto.url : null
-              }
-              onUpdateProfilePicture={updateProfilePicture}
-              onUpdateCoverPhoto={updateCoverPhoto}
-              setNotificationSubscription={setNotificationSubscription}
-            />
-            {content}
-          </PullToRefresh>
-        </MobilePageContainer>
-      </NetworkConnectivityMonitor>
+            <PullToRefresh
+              fetchContent={asyncRefresh}
+              shouldPad={false}
+              overImage
+              isDisabled={isEditing || isUserConfirming}
+            >
+              <ProfileHeader
+                name={name}
+                handle={handle}
+                isArtist={isArtist}
+                bio={bio}
+                verified={verified}
+                userId={profile.user_id}
+                loading={status === Status.LOADING}
+                coverPhotoSizes={coverPhotoSizes}
+                profilePictureSizes={profilePictureSizes}
+                hasProfilePicture={hasProfilePicture}
+                playlistCount={profile.playlist_count}
+                trackCount={profile.track_count}
+                followerCount={profile.follower_count}
+                followingCount={profile.followee_count}
+                setFollowingUserId={setFollowingUserId}
+                setFollowersUserId={setFollowersUserId}
+                twitterHandle={twitterHandle}
+                instagramHandle={instagramHandle}
+                website={website}
+                donation={donation}
+                followers={followers}
+                following={following}
+                isSubscribed={isSubscribed}
+                onFollow={onFollow}
+                onUnfollow={onConfirmUnfollow}
+                goToRoute={goToRoute}
+                mode={mode}
+                switchToEditMode={onEdit}
+                updatedProfilePicture={
+                  updatedProfilePicture ? updatedProfilePicture.url : null
+                }
+                updatedCoverPhoto={
+                  updatedCoverPhoto ? updatedCoverPhoto.url : null
+                }
+                onUpdateProfilePicture={updateProfilePicture}
+                onUpdateCoverPhoto={updateCoverPhoto}
+                setNotificationSubscription={setNotificationSubscription}
+              />
+              {content}
+            </PullToRefresh>
+          </MobilePageContainer>
+        </NetworkConnectivityMonitor>
+        <TierExplainerDrawer />
+      </>
     )
   }
 )

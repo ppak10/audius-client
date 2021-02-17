@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import cn from 'classnames'
+import { Modal } from '@audius/stems'
 
-import Modal from 'components/general/AudiusModal'
 import { ReactComponent as IconRemove } from 'assets/img/iconRemove.svg'
 
 import styles from './NotificationSettings.module.css'
@@ -17,7 +17,7 @@ import { Permission } from 'utils/browserNotifications'
 
 const messages = {
   title: 'NOTIFICATIONS',
-  browserPushNotifications: 'Brower Push Notifications',
+  browserPushNotifications: 'Browser Push Notifications',
   milestonesAndAchievements: 'Milestones and Achievements',
   followers: 'New Followers',
   reposts: 'Reposts',

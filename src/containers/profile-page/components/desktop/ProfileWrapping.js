@@ -22,7 +22,7 @@ import { formatCount, squashNewLines } from 'utils/formatUtil'
 
 import styles from './ProfilePage.module.css'
 import { ReactComponent as BadgeArtist } from 'assets/img/badgeArtist.svg'
-import { verifiedHandleWhitelist } from 'utils/handleWhitelist'
+import ProfilePageBadge from 'containers/user-badges/ProfilePageBadge'
 
 const Tags = props => {
   const { tags, goToRoute } = props
@@ -73,7 +73,6 @@ const Followers = props => {
               name={follower.name}
               followers={follower.follower_count}
               onClickArtistName={() => props.onClickArtistName(follower.handle)}
-              verified={follower.is_verified}
             />
           ))}
       </div>
@@ -170,12 +169,8 @@ const ProfileWrapping = props => {
         </div>
         <div className={styles.editField}>
           <SocialLinkInput
-            defaultValue={
-              props.verified
-                ? props.handle.replace('@', '')
-                : props.twitterHandle
-            }
-            isDisabled={props.verified}
+            defaultValue={props.twitterHandle}
+            isDisabled={!!props.twitterVerified}
             className={styles.twitterInput}
             type={Type.TWITTER}
             onChange={props.onUpdateTwitterHandle}
@@ -185,6 +180,7 @@ const ProfileWrapping = props => {
           <SocialLinkInput
             defaultValue={props.instagramHandle}
             className={styles.instagramInput}
+            isDisabled={!!props.instagramVerified}
             type={Type.INSTAGRAM}
             onChange={props.onUpdateInstagramHandle}
           />
@@ -213,6 +209,7 @@ const ProfileWrapping = props => {
   } else if (!props.loading) {
     leftNav = (
       <div className={styles.about}>
+        <ProfilePageBadge userId={props.userId} className={styles.badge} />
         <Linkify options={{ attributes: { onClick: onExternalLinkClick } }}>
           <div className={styles.description}>{squashNewLines(props.bio)}</div>
         </Linkify>
@@ -222,11 +219,7 @@ const ProfileWrapping = props => {
           {props.twitterHandle && (
             <SocialLink
               type={Type.TWITTER}
-              link={
-                props.verified && !verifiedHandleWhitelist.has(props.handle)
-                  ? props.handle.replace('@', '')
-                  : props.twitterHandle
-              }
+              link={props.twitterHandle}
               onClick={onClickTwitter}
             />
           )}
@@ -320,6 +313,7 @@ const ProfileWrapping = props => {
             editable={props.editMode}
             verified={props.verified}
             onChange={props.onUpdateName}
+            userId={props.userId}
           />
           <h2 className={styles.handle}>{props.handle}</h2>
         </div>

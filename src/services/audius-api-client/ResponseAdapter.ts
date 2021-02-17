@@ -1,4 +1,5 @@
 import Favorite from 'models/Favorite'
+import { ID } from 'models/common/Identifiers'
 import Repost from 'models/Repost'
 import { Remix, StemTrackMetadata, UserTrackMetadata } from 'models/Track'
 import { UserCollectionMetadata, Variant } from 'models/Collection'
@@ -21,6 +22,7 @@ import {
   APISearchAutocomplete,
   APISearchPlaylist
 } from './types'
+import { StringWei } from 'store/wallet/slice'
 
 export const makeUser = (
   user: APISearchUser | APIUser
@@ -30,6 +32,7 @@ export const makeUser = (
     return undefined
   }
 
+  const balance = user.balance as StringWei
   const album_count = 'album_count' in user ? user.album_count : 0
   const followee_count = 'followee_count' in user ? user.followee_count : 0
   const follower_count = 'follower_count' in user ? user.follower_count : 0
@@ -45,6 +48,7 @@ export const makeUser = (
 
   const newUser = {
     ...user,
+    balance,
     album_count,
     followee_count,
     follower_count,
@@ -174,6 +178,14 @@ export const makeTrack = (
   delete marshalled.favorite_count
 
   return marshalled
+}
+
+export const makeTrackId = (track: { id: string }): ID | undefined => {
+  const decodedTrackId = decodeHashId(track.id)
+  if (!decodedTrackId) {
+    return undefined
+  }
+  return decodedTrackId
 }
 
 export const makePlaylist = (

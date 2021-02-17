@@ -14,7 +14,10 @@ import {
 } from './types'
 import * as adapter from './ResponseAdapter'
 import AudiusBackend from 'services/AudiusBackend'
-import { getEagerDiscprov } from 'services/audius-backend/eagerLoadUtils'
+import {
+  getEagerDiscprov,
+  waitForLibsInit
+} from 'services/audius-backend/eagerLoadUtils'
 import { encodeHashId } from 'utils/route/hashIds'
 import { StemTrackMetadata } from 'models/Track'
 import { SearchKind } from 'containers/search-page/store/types'
@@ -28,6 +31,7 @@ declare global {
 
 const ENDPOINT_MAP = {
   trending: '/tracks/trending',
+  trendingIds: '/tracks/trending/ids',
   following: (userId: OpaqueID) => `/users/${userId}/following`,
   followers: (userId: OpaqueID) => `/users/${userId}/followers`,
   trackRepostUsers: (trackId: OpaqueID) => `/tracks/${trackId}/reposts`,
@@ -71,7 +75,12 @@ type GetTrendingArgs = {
   offset?: number
   limit?: number
   currentUserId: Nullable<ID>
-  genre?: string
+  genre: Nullable<string>
+}
+
+type GetTrendingIdsArgs = {
+  limit?: number
+  genre?: Nullable<string>
 }
 
 type GetFollowingArgs = {
@@ -185,6 +194,18 @@ type GetSearchArgs = {
   offset?: number
 }
 
+type TrendingIdsResponse = {
+  week: { id: string }[]
+  month: { id: string }[]
+  year: { id: string }[]
+}
+
+type TrendingIds = {
+  week: ID[]
+  month: ID[]
+  year: ID[]
+}
+
 type InitializationState =
   | { state: 'uninitialized' }
   | {
@@ -238,7 +259,7 @@ class AudiusAPIClient {
       limit,
       offset,
       user_id: encodedCurrentUserId || undefined,
-      genre
+      genre: genre || undefined
     }
 
     const trendingResponse: Nullable<APIResponse<
@@ -251,6 +272,40 @@ class AudiusAPIClient {
       .map(adapter.makeTrack)
       .filter(removeNullable)
     return adapted
+  }
+
+  async getTrendingIds({ genre, limit }: GetTrendingIdsArgs) {
+    this._assertInitialized()
+    const params = {
+      limit,
+      genre: genre || undefined
+    }
+    const trendingIdsResponse: Nullable<APIResponse<
+      TrendingIdsResponse
+    >> = await this._getResponse(ENDPOINT_MAP.trendingIds, params)
+    if (!trendingIdsResponse) {
+      return {
+        week: [],
+        month: [],
+        year: []
+      }
+    }
+
+    const timeRanges = Object.keys(trendingIdsResponse.data) as TimeRange[]
+    const res = timeRanges.reduce(
+      (acc: TrendingIds, timeRange: TimeRange) => {
+        acc[timeRange] = trendingIdsResponse.data[timeRange]
+          .map(adapter.makeTrackId)
+          .filter(Boolean) as ID[]
+        return acc
+      },
+      {
+        week: [],
+        month: [],
+        year: []
+      }
+    )
+    return res
   }
 
   async getFollowing({
@@ -722,7 +777,11 @@ class AudiusAPIClient {
       (await this._getResponse(ENDPOINT_MAP.searchAutocomplete, params)) ??
       emptySearchResponse
     const adapted = adapter.adaptSearchAutocompleteResponse(searchResponse)
-    return processSearchResults({ searchText: query, ...adapted })
+    return processSearchResults({
+      searchText: query,
+      isAutocomplete: true,
+      ...adapted
+    })
   }
 
   init() {
@@ -742,12 +801,14 @@ class AudiusAPIClient {
 
     // Set the state to the eager discprov
     const eagerDiscprov = getEagerDiscprov()
-    const fullDiscprov = this._formatEndpoint(eagerDiscprov)
-    console.debug(`APIClient: setting to eager discprov: ${fullDiscprov}`)
-    this.initializationState = {
-      state: 'initialized',
-      endpoint: fullDiscprov,
-      type: 'manual'
+    if (eagerDiscprov) {
+      const fullDiscprov = this._formatEndpoint(eagerDiscprov)
+      console.debug(`APIClient: setting to eager discprov: ${fullDiscprov}`)
+      this.initializationState = {
+        state: 'initialized',
+        endpoint: fullDiscprov,
+        type: 'manual'
+      }
     }
 
     // Listen for libs on chain selection
@@ -760,6 +821,7 @@ class AudiusAPIClient {
         type: 'libs'
       }
     })
+
     console.debug('APIClient: Initialized')
   }
 
@@ -778,11 +840,17 @@ class AudiusAPIClient {
     if (this.initializationState.state !== 'initialized')
       throw new Error('_constructURL called uninitialized')
 
+    // If a param has a null value, remove it
+    const sanitizedParams = Object.keys(params).reduce((acc, cur) => {
+      const val = params[cur]
+      if (val === null || val === undefined) return acc
+      return { ...acc, [cur]: val }
+    }, {})
     if (this.initializationState.type === 'libs' && window.audiusLibs) {
       const data = await window.audiusLibs.discoveryProvider._makeRequest(
         {
           endpoint: this._formatPath(path),
-          queryParams: params
+          queryParams: sanitizedParams
         },
         retry
       )
@@ -791,13 +859,25 @@ class AudiusAPIClient {
       return { data } as any
     }
 
-    const resource = this._constructUrl(path, params)
-    const response = await fetch(resource)
-    if (!response.ok) {
-      if (response.status === 404) return null
-      throw new Error(response.statusText)
+    // Initialization type is manual. Make requests with fetch and handle failures.
+    const resource = this._constructUrl(path, sanitizedParams)
+    try {
+      const response = await fetch(resource)
+      if (!response.ok) {
+        if (response.status === 404) return null
+        throw new Error(response.statusText)
+      }
+      return response.json()
+    } catch (e) {
+      // Something went wrong with the request and we should wait for the libs
+      // initialization state
+      if (this.initializationState.type === 'manual') {
+        await waitForLibsInit()
+        return this._getResponse(path, sanitizedParams, retry)
+      }
+      // Something is just broken, propagate the error out
+      throw e
     }
-    return response.json()
   }
 
   _formatPath(path: string) {
