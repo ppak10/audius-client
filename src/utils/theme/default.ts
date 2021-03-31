@@ -1,52 +1,59 @@
 const theme = {
-  '--background': '#F3F0F7',
-
-  '--primary': '#CC0FE0',
-  '--primary-dark-1': '#B80ECA',
-  '--primary-dark-2': '#A30CB3',
-  '--primary-light-1': '#D127E3',
-  '--primary-light-2': '#D63FE6',
-
-  '--secondary': '#7E1BCC',
-  '--secondary-transparent': 'rgba(126, 27, 204, 0.85)',
-  '--secondary-dark-1': '#7118B8',
-  '--secondary-dark-2': '#6516A3',
-  '--secondary-light-1': '#8B32D1',
-  '--secondary-light-2': '#9849D6',
-
-  '--neutral': '#858199',
+  '--background': '#EDEDED',
+  '--primary': '#FF5502',
+  '--primary-dark-1': '#FF5502',
+  '--primary-dark-2': '#FF5502',
+  '--primary-light-1': '#FF5502',
+  '--primary-light-2': '#FF5502',
+  '--secondary': '#FF5502',
+  '--secondary-transparent': '#FF5502d9',
+  '--secondary-dark-1': '#FF5502',
+  '--secondary-dark-2': '#FF5502',
+  '--secondary-light-1': '#FF5502',
+  '--secondary-light-2': '#FF5502',
+  '--neutral': '#333333',
   '--neutral-dark-1': '#78748A',
   '--neutral-dark-2': '#6A677A',
   '--neutral-dark-3': '#4D535A',
-  '--neutral-light-1': '#9D9AAD',
-  '--neutral-light-2': '#AAA7B8',
-  '--neutral-light-3': '#B6B3C2',
-  '--neutral-light-4': '#C2C0CC',
-  '--neutral-light-5': '#CECDD6',
-  '--neutral-light-6': '#DAD9E0',
-  '--neutral-light-7': '#E7E6EB',
-  '--neutral-light-8': '#F2F2F4',
-  '--neutral-light-9': '#F7F7F9',
+  '--neutral-light-1': '#5C5C5C',
+  '--neutral-light-2': '#7A7A7A',
+  '--neutral-light-3': '#999999',
+  '--neutral-light-4': '#ADADAD',
+  '--neutral-light-5': '#C2C2C2',
+  '--neutral-light-6': '#D6D6D6',
+  '--neutral-light-7': '#E0E0E0',
+  '--neutral-light-8': '#EBEBEB',
+  '--neutral-light-9': '#F5F5F5',
   '--neutral-light-10': '#FCFCFC',
   '--white': '#FFFFFF',
-  '--darkmode-static-white': 'var(--white)',
-
   '--accent-red': '#D0021B',
   '--accent-red-dark-1': '#AA0115',
   '--accent-red-light-1': '#D51B32',
-
   '--accent-green': '#0BA400',
   '--accent-green-dark-1': '#0A9400',
   '--accent-green-light-1': '#23AD1A',
-
   '--accent-orange': '#FF9400',
   '--accent-orange-dark-1': '#F28100',
   '--accent-orange-light-1': '#FFA70F',
-
-  '--accent-purple': '#8E51CF',
-
-  '--page-header-gradient-color-1': '#5B23E1',
-  '--page-header-gradient-color-2': '#A22FEB',
+  '--accent-purple': '#FF5502',
+  '--primary-gradient': 'linear-gradient(315deg, #E83000 0%, #FF8924 100%)',
+  '--primary-gradient-alt-1':
+    'linear-gradient(315deg, #E83000 0%, #FF8924 100%)',
+  '--secondary-gradient': 'linear-gradient(315deg, #E83000 0%, #FF8924 100%)',
+  '--page-header-gradient-color-1': '#E83000',
+  '--page-header-gradient-color-2': '#FF8924',
+  '--page-header-gradient':
+    'linear-gradient(-22deg, var(--page-header-gradient-color-1) 0%, var(--page-header-gradient-color-2) 100%)',
+  '--page-header-text-shadow-color': 'rgba(235, 141, 47, 0.2)',
+  '--page-header-text-shadow':
+    '0px 2px 4px var(--page-header-text-shadow-color)',
+  '--accent-red-gradient':
+    'linear-gradient(315deg, var(--accent-red-dark-1) 0%, var(--accent-red-light-1) 100%)',
+  '--play-button-triangle': 'var(--static-white)',
+  '--action-sheet-text': 'var(--secondary)',
+  '--track-slider-rail': 'var(--neutral)',
+  '--track-slider-handle': 'var(--static-white)',
+  '--stat-tile-text': '#ffa375',
 
   '--tile-shadow-1': 'rgba(133,129,153,0.1)',
   '--tile-shadow-2': '#E3E3E3',
@@ -98,36 +105,25 @@ const theme = {
   '--notification-unread-border-active': 'rgba(126,27,204,0.3)',
   '--notification-unread-background-active': 'rgba(152,73,214,0.06)',
 
-  '--page-header-gradient':
-    'linear-gradient(-22deg, var(--page-header-gradient-color-1) 0%, var(--page-header-gradient-color-2) 100%)',
-  '--secondary-gradient': 'linear-gradient(315deg, #6B0FB3 0%, #7E1BCC 100%)',
   '--page-header-gradient-1': 'rgb(252,252,252)',
   '--page-header-gradient-2': 'rgba(252,252,252,0.85)',
   '--page-header-gradient-2-alt': 'rgba(252,252,252,0.95)',
-  '--page-header-text-shadow-color': 'rgba(162,47,235,0.2)',
-  '--page-header-text-shadow':
-    '0px 2px 4px var(--page-header-text-shadow-color)',
   '--next-and-previous-buttons': 'var(--neutral)',
 
   '--segmented-progress-bar-segment-1':
-    'linear-gradient(180deg, #ED75F9 0%, #CC0FE0 100%)',
+    'linear-gradient(315deg, #E83000 0%, #FF8924 100%)',
   '--segmented-progress-bar-segment-2':
-    'linear-gradient(180deg, #E477FB 0%, #B815DB 100%)',
+    'linear-gradient(315deg, #E83000 0%, #FF8924 100%)',
   '--segmented-progress-bar-segment-3':
-    'linear-gradient(180deg, #D069F5 0%, #9F0AD4 100%)',
+    'linear-gradient(315deg, #E83000 0%, #FF8924 100%)',
   '--segmented-progress-bar-segment-4':
-    'linear-gradient(180deg, #CC75FA 0%, #8908CE 100%)',
+    'linear-gradient(315deg, #E83000 0%, #FF8924 100%)',
   '--segmented-progress-bar-segment-5':
-    'linear-gradient(180deg, #AF4DFF 0%, #7305C8 100%)',
+    'linear-gradient(315deg, #E83000 0%, #FF8924 100%)',
   '--segmented-progress-bar-segment-6':
-    'linear-gradient(180deg, #9C45FF 0%, #5C03C2 100%)',
+    'linear-gradient(315deg, #E83000 0%, #FF8924 100%)',
   '--segmented-progress-bar-segment-7':
-    'linear-gradient(180deg, #833BFB 0%, #4600BC 100%)',
-  '--play-button-triangle': 'var(--static-white)',
-  '--action-sheet-text': 'var(--secondary)',
-  '--track-slider-rail': 'var(--neutral)',
-  '--track-slider-handle': 'var(--static-white)',
-  '--stat-tile-text': '#C675FF'
+    'linear-gradient(315deg, #E83000 0%, #FF8924 100%)'
 }
 
 export default theme
