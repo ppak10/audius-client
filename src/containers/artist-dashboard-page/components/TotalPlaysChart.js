@@ -28,8 +28,8 @@ const MONTHS = {
 const transformMonth = monthShort => MONTHS[monthShort]
 
 const getDataProps = ({ labels, values }, isMatrix) => {
-  const colorPrimary = isMatrix ? '#0CF10C' : '#CC0FE0'
-  const colorBackground = isMatrix ? '#184F17' : 'rgb(234, 197, 244)'
+  const colorPrimary = isMatrix ? '#0CF10C' : '#E83000'
+  const colorBackground = isMatrix ? '#184F17' : 'rgba(232, 48, 0, .2)'
   return {
     labels: [...labels],
     datasets: [
