@@ -20,6 +20,7 @@ import { Dispatch } from 'redux'
 import User from 'models/User'
 import MobilePageContainer from 'components/general/MobilePageContainer'
 import styles from './SignOnPage.module.css'
+import noTheme from 'assets/styles/noTheme.module.css'
 import { PushNotificationSetting } from 'containers/settings-page/store/types'
 import { BASE_URL, SIGN_UP_PAGE } from 'utils/route'
 import cn from 'classnames'
@@ -286,7 +287,7 @@ const SignOnPage = ({
       canonicalUrl={`${BASE_URL}${SIGN_UP_PAGE}`}
       fullHeight
       backgroundClassName={styles.background}
-      containerClassName={cn(styles.container, {
+      containerClassName={cn(styles.container, noTheme.style, {
         [styles.followPage]: transitionPage === Pages.FOLLOW
       })}
     >

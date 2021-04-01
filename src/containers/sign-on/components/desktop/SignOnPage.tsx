@@ -32,6 +32,7 @@ import { BASE_URL, SIGN_UP_PAGE } from 'utils/route'
 import AppCTA from './AppCTA'
 import lazyWithPreload from 'utils/lazyWithPreload'
 import { InstagramProfile } from 'store/account/reducer'
+import noTheme from 'assets/styles/noTheme.module.css'
 
 const MetaMaskModal = lazyWithPreload(
   () => import('containers/sign-on/components/desktop/MetaMaskModal'),
@@ -375,7 +376,7 @@ const SignOnProvider = ({
       title={title}
       description={description}
       canonicalUrl={`${BASE_URL}${SIGN_UP_PAGE}`}
-      containerClassName={styles.pageContainer}
+      containerClassName={cn(styles.pageContainer, noTheme.style)}
       contentClassName={styles.pageContent}
       fadeDuration={400}
     >

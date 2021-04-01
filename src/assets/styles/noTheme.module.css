@@ -1,0 +1,32 @@
+.style {
+  --background: var(--static-background);
+
+  --primary: var(--static-primary);
+  --primary-dark-1: var(--static-primary-dark-1);
+  --primary-dark-2: var(--static-primary-dark-2);
+  --primary-light-1: var(--static-primary-light-1);
+  --primary-light-2: var(--static-primary-light-2);
+
+  --secondary: var(--static-secondary);
+  --secondary-transparent: var(--static-secondary-transparent);
+  --secondary-dark-1: var(--static-secondary-dark-1);
+  --secondary-dark-2: var(--static-secondary-dark-2);
+  --secondary-light-1: var(--static-secondary-light-1);
+  --secondary-light-2: var(--static-secondary-light-2);
+
+  --neutral: var(--static-neutral);
+  --neutral-dark-1: var(--static-neutral-dark-1);
+  --neutral-dark-2: var(--static-neutral-dark-2);
+  --neutral-dark-3: var(--static-neutral-dark-3);
+  --neutral-light-1: var(--static-neutral-light-1);
+  --neutral-light-2: var(--static-neutral-light-2);
+  --neutral-light-3: var(--static-neutral-light-3);
+  --neutral-light-4: var(--static-neutral-light-4);
+  --neutral-light-5: var(--static-neutral-light-5);
+  --neutral-light-6: var(--static-neutral-light-6);
+  --neutral-light-7: var(--static-neutral-light-7);
+  --neutral-light-8: var(--static-neutral-light-8);
+  --neutral-light-9: var(--static-neutral-light-9);
+  --neutral-light-10: var(--static-neutral-light-10);
+  --white: var(--static-white);
+}
