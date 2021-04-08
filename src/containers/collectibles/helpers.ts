@@ -4,7 +4,16 @@ import {
   CollectibleType
 } from 'containers/collectibles/components/types'
 import { resizeImage } from 'utils/imageProcessingUtil'
-import { preload } from 'utils/image'
+
+// Simple preloader that resolves on image load or on error
+export const preload = async (src: string) => {
+  return new Promise((resolve, reject) => {
+    const i = new Image()
+    i.onload = resolve
+    i.onerror = reject
+    i.src = src
+  })
+}
 
 const OPENSEA_AUDIO_EXTENSIONS = ['mp3', 'wav', 'oga']
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -41,12 +50,12 @@ export const isAssetValid = (asset: OpenSeaAsset) => {
   return isAssetVideo(asset) || isAssetImage(asset) || isAssetGif(asset)
 }
 
-export const assetToCollectible = (asset: OpenSeaAsset): Collectible => {
+export const assetToCollectible = async (asset: OpenSeaAsset) => {
   let type = CollectibleType.IMAGE
   if (isAssetVideo(asset)) type = CollectibleType.VIDEO
   if (isAssetGif(asset)) type = CollectibleType.GIF
 
-  return {
+  const collectible = {
     id: asset.token_id,
     name: asset.name,
     description: asset.description,
@@ -63,28 +72,41 @@ export const assetToCollectible = (asset: OpenSeaAsset): Collectible => {
     dateLastTransferred: null,
     externalLink: asset.external_link
   }
+
+  try {
+    if (type === CollectibleType.IMAGE && collectible.imageUrl) {
+      console.log('preloading', collectible.imageUrl)
+      await preload(collectible.imageUrl)
+    }
+  } catch (e) {
+    console.log('caught in err', collectible.imageUrl)
+    collectible.animationUrl = collectible.imageUrl
+    collectible.type = CollectibleType.VIDEO
+  }
+
+  return collectible
 }
 
-export const creationEventToCollectible = (
-  event: OpenSeaEvent
-): Collectible => {
+export const creationEventToCollectible = async (event: OpenSeaEvent) => {
   const { asset, created_date } = event
 
+  const collectible = await assetToCollectible(asset)
   return {
-    ...assetToCollectible(asset),
+    ...collectible,
     dateCreated: created_date,
     isOwned: false
   }
 }
 
-export const transferEventToCollectible = (
+export const transferEventToCollectible = async (
   event: OpenSeaEvent,
   isOwned = true
-): Collectible => {
+) => {
   const { asset, created_date } = event
 
+  const collectible = await assetToCollectible(asset)
   return {
-    ...assetToCollectible(asset),
+    ...collectible,
     isOwned,
     dateLastTransferred: created_date
   }
@@ -123,8 +145,8 @@ export const getCollectibleImage = async (collectible: Collectible) => {
   if (imageThumbnailUrl?.endsWith('.gif')) {
     return await getFrameFromGif(imageThumbnailUrl, name || '')
   }
-  if (imageUrl) {
-    await preload(imageUrl)
-  }
+  // if (imageUrl) {
+  //   await preload(imageUrl)
+  // }
   return imageUrl
 }

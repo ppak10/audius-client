@@ -103,13 +103,14 @@ class OpenSeaClient {
       client.getCollectiblesForMultipleWallets(wallets),
       client.getCreatedCollectiblesForMultipleWallets(wallets),
       client.getTransferredCollectiblesForMultipleWallets(wallets)
-    ]).then(([assets, creationEvents, transferEvents]) => {
+    ]).then(async ([assets, creationEvents, transferEvents]) => {
+      console.log({ assets, creationEvents, transferEvents })
       const collectiblesMap: { [key: string]: Collectible } = assets
         .filter(asset => asset && isAssetValid(asset))
         .reduce(
-          (acc, curr) => ({
+          async (acc, curr) => ({
             ...acc,
-            [curr.token_id]: assetToCollectible(curr)
+            [curr.token_id]: await assetToCollectible(curr)
           }),
           {}
         )
@@ -135,31 +136,36 @@ class OpenSeaClient {
             [curr.asset.token_id]: curr
           }
         }, {})
-      Object.values(firstOwnershipTransferEvents).forEach(event => {
-        if (ownedCollectibleKeySet.has(event.asset.token_id)) {
-          collectiblesMap[event.asset.token_id] = {
-            ...collectiblesMap[event.asset.token_id],
-            dateLastTransferred: event.created_date
+      await Promise.all(
+        Object.values(firstOwnershipTransferEvents).map(async event => {
+          if (ownedCollectibleKeySet.has(event.asset.token_id)) {
+            collectiblesMap[event.asset.token_id] = {
+              ...collectiblesMap[event.asset.token_id],
+              dateLastTransferred: event.created_date
+            }
+          } else {
+            ownedCollectibleKeySet.add(event.asset.token_id)
+            collectiblesMap[
+              event.asset.token_id
+            ] = await transferEventToCollectible(event, false)
           }
-        } else {
-          ownedCollectibleKeySet.add(event.asset.token_id)
-          collectiblesMap[event.asset.token_id] = transferEventToCollectible(
-            event,
-            false
-          )
-        }
-      })
+          return true
+        })
+      )
 
       // Handle created events
-      creationEvents
-        .filter(event => event && isAssetValid(event.asset))
-        .forEach(event => {
-          const tokenId = event.asset.token_id
-          if (!ownedCollectibleKeySet.has(tokenId)) {
-            collectiblesMap[tokenId] = creationEventToCollectible(event)
-            ownedCollectibleKeySet.add(tokenId)
-          }
-        })
+      await Promise.all(
+        creationEvents
+          .filter(event => event && isAssetValid(event.asset))
+          .map(async event => {
+            const tokenId = event.asset.token_id
+            if (!ownedCollectibleKeySet.has(tokenId)) {
+              collectiblesMap[tokenId] = await creationEventToCollectible(event)
+              ownedCollectibleKeySet.add(tokenId)
+            }
+            return true
+          })
+      )
 
       // Handle transfers
       const latestTransferEventsMap = transferEvents
@@ -181,19 +187,22 @@ class OpenSeaClient {
             [curr.asset.token_id]: curr
           }
         }, {})
-      Object.values(latestTransferEventsMap).forEach(event => {
-        if (ownedCollectibleKeySet.has(event.asset.token_id)) {
-          collectiblesMap[event.asset.token_id] = {
-            ...collectiblesMap[event.asset.token_id],
-            dateLastTransferred: event.created_date
+      await Promise.all(
+        Object.values(latestTransferEventsMap).map(async event => {
+          if (ownedCollectibleKeySet.has(event.asset.token_id)) {
+            collectiblesMap[event.asset.token_id] = {
+              ...collectiblesMap[event.asset.token_id],
+              dateLastTransferred: event.created_date
+            }
+          } else if (wallets.includes(event.to_account.address)) {
+            ownedCollectibleKeySet.add(event.asset.token_id)
+            collectiblesMap[
+              event.asset.token_id
+            ] = await transferEventToCollectible(event)
           }
-        } else if (wallets.includes(event.to_account.address)) {
-          ownedCollectibleKeySet.add(event.asset.token_id)
-          collectiblesMap[event.asset.token_id] = transferEventToCollectible(
-            event
-          )
-        }
-      })
+          return true
+        })
+      )
 
       return Object.values(collectiblesMap)
     })
