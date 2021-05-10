@@ -78,6 +78,7 @@ export function* fetchNotifications(
     const dateOffset = lastNotification
       ? lastNotification.timestamp
       : moment().toISOString()
+    // todo maybe another field here thats playlistUpdates
     const notificationsResponse = yield call(
       AudiusBackend.getNotifications,
       limit,
@@ -99,9 +100,11 @@ export function* fetchNotifications(
       totalUnread: number
     } = notificationsResponse
 
+    // todo do we need to change anything in the parse?
     const notifications = yield parseAndProcessNotifications(notificationItems)
 
     const hasMore = notifications.length >= limit
+    // todo do we filter out the playlist notifications and set to own state variable
     yield put(
       notificationActions.fetchNotificationSucceeded(
         notifications,

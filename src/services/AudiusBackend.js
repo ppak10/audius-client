@@ -2153,6 +2153,32 @@ class AudiusBackend {
   }
 
   /**
+   * Sets the playlist as viewed to reset the playlist updates notifications timer
+   * @param {playlistLibraryItemId} playlistLibraryItemId playlist id or folder id
+   */
+  static async updateLastPlaylistView(playlistLibraryItemId) {
+    await waitForLibsInit()
+    const account = audiusLibs.Account.getCurrentUser()
+    console.log({ account })
+    // return
+    if (!account) return
+    try {
+      await fetch(
+        `${IDENTITY_SERVICE}/user_playlist_updates?walletAddress=${account.wallet}&playlistLibraryItemId=${playlistLibraryItemId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+    } catch (err) {
+      console.error(err.message)
+      return false
+    }
+  }
+
+  /**
    * Retrieves the claim distribution amount
    * @returns {BN} amount The claim amount
    */
